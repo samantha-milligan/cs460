@@ -37,8 +37,7 @@ public void runServerLoop() throws IOException {
         System.out.println("Waiting for connections on port #" + port);
         try {
         Socket cliSocket = serverSocket.accept();
-        EchoThread echoThread = new EchoThread(cliSocket);
-        echoThread.start();
+        new Thread(new EchoThread(cliSocket)).start();
         }catch(IOException ioe) { 
             System.out.println("Exception found on accept. Ignoring. Stack Trace :"); 
             ioe.printStackTrace(); 
@@ -46,17 +45,14 @@ public void runServerLoop() throws IOException {
     }
     
 }
-class EchoThread extends Thread{
+public class EchoThread implements Runnable{
     Socket cliSocket;
-    public EchoThread() { 
-       super(); 
-    } 
     EchoThread(Socket s)
     {
-    	cliSocket = s; 
+    	this.cliSocket = s; 
     }
 
-    public void handleClient() {
+    public void run() {
 
         DataInputStream fromClient = null;
         DataOutputStream toClient = null;
@@ -106,6 +102,7 @@ class EchoThread extends Thread{
         }
 
     }
+
 
     }
 public static void main(String args[]) throws Exception {
