@@ -5,11 +5,11 @@
  ************************************************************************/
 
 int main(int argc, char** argv) {
-    int server_socket;                 // descriptor of server socket
-    struct sockaddr_in server_address; // for naming the server's listening socket
-    int client_socket[MAX_NUM_CONT_CLIENTS];              // number of clients we can accept
+    int server_socket;                          // descriptor of server socket
+    struct sockaddr_in server_address;          // for naming the server's listening socket
+    int client_socket[MAX_NUM_CONT_CLIENTS];    // number of clients we can accept
 
-    int avail_socket;                  // use this socket new connections
+    int avail_socket;                           // use this socket new connections
     pthread_t pthread_id[MAX_NUM_CONT_CLIENTS];
     int loop_for_avail;
 
@@ -54,8 +54,7 @@ int main(int argc, char** argv) {
 
         //printf("\navail_socket: %i\n", avail_socket);
 
-        // avail_socket didn't chage and client_socket[0] is busy
-        // change AVAIL SOCKET ON LHS TO 0 I
+        // if all conections are busy
         if (client_socket[avail_socket] != 0 && avail_socket == MAX_NUM_CONT_CLIENTS) {
             continue;
         } // accept connection to client and send handling to pthread
@@ -63,33 +62,9 @@ int main(int argc, char** argv) {
             perror("Error accepting client");
         } else {
             printf("\nAccepted client\n");
-            // printf("\navail socket:%i\n", avail_socket);
-            // printf("\nclient socket:%i\n", *(client_socket + avail_socket));
 
             pthread_create(&pthread_id[avail_socket], NULL, handle_client, client_socket + avail_socket);
             pthread_detach(pthread_id[avail_socket]);
-
-            // for java
-            // have to wait until connection established before program moving in
-            // wait then notify so ensure connection established then return safely to loopback
-
-            // for c
-            // call pthread with int val returned in accept
-
-            // professor used a mutex to guard threads
-            // created condition variables
-            // initialized task queue and a finite amount of threads
-
-            // creates function to give pthread and not handle_client
-            // creates all threads now in a thread pool
-            // pass low level thread function with thread pool as arg for pthread_create
-            // new low level function runs on a loop
-            // dispatches task to a thread
-            // wait if no thread available
-
-            // have threads do code by
-
-            //handle_client(client_socket + avail_socket);
         }
     }
 }
