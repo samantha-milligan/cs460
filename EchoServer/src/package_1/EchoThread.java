@@ -4,18 +4,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.lang.Thread;
 
 public class EchoThread implements Runnable{
-    Socket cliSocket;
-    EchoThread(Socket s)
-    {
-    	this.cliSocket = s; 
-    }
+    
+	Socket cliSocket;
+    EchoThread(Socket s) {
+	    this.cliSocket = s; 
+	}
 
     public void run() {
 
@@ -23,7 +19,6 @@ public class EchoThread implements Runnable{
         DataOutputStream toClient = null;
 
         int charFromClient = 0;
-        int state = 0;
         boolean keepGoing = true;
 
         // show that we are connected to client
@@ -33,7 +28,8 @@ public class EchoThread implements Runnable{
         try {
             fromClient = new DataInputStream(cliSocket.getInputStream());
             toClient = new DataOutputStream(cliSocket.getOutputStream());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.err.println("Error opening network streams");
             return;
         }
@@ -43,14 +39,16 @@ public class EchoThread implements Runnable{
             try {
                 charFromClient = fromClient.readByte();
                 System.out.print((char)charFromClient);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 System.err.println("Error reading character from client");
                 return;
             }
 
             try {
                 toClient.writeByte(charFromClient);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 System.err.println("Error writing character to client");
                 return;            }
             
@@ -65,9 +63,5 @@ public class EchoThread implements Runnable{
         } catch (IOException e) {
             System.err.println("Error closing socket to client");
         }
-
     }
-
-
-    }
-
+}
