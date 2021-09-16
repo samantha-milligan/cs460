@@ -1,10 +1,10 @@
 CC = gcc
 
 server: server.h server.o
-	$(CC) server.c -o server
+	$(CC) -pthread -o server server.c
 
 client: server.h client.o
-	$(CC) client.c -o client
+	$(CC) -o client client.c
 
 clean:
 	rm server server.o client client.o

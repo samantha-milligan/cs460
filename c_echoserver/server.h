@@ -37,3 +37,4 @@ void *handle_client(void *pthreaded_client_socket);
 
 // number of pending connections in the connection queue
 #define NUM_CONNECTIONS 1
+#define MAX_NUM_CONT_CLIENTS 2
