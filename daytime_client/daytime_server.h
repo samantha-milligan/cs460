@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
 
 // Input/output libraries
 #include <sys/uio.h>

@@ -1,4 +1,4 @@
-#include "server.h"
+#include "daytime_server.h"
 
 // Daytime Client
 // Connects to NIST server and displays current UTC time
@@ -10,8 +10,9 @@ int main() {
 
     // Define socket address
     struct sockaddr_in client_address;
+    char* time_server_ip = inet_ntoa(*(struct in_addr *)(gethostbyname(SERVER_ADDR)->h_addr_list[0]));
     client_address.sin_family = AF_INET;
-    client_address.sin_addr.s_addr = inet_addr(SERVER_ADDR);
+    client_address.sin_addr.s_addr = inet_addr(time_server_ip);
     client_address.sin_port = htons(PORT);
 
     // Connect to daytime server
