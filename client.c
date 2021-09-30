@@ -1,7 +1,8 @@
-#include "daytime_server.h"
+#include "client.h"
 
-// Daytime Client
-// Connects to NIST server and displays current UTC time
+// Client
+// Sends user integer to Java 3A+1 server
+// Prints algorithm steps from server
 
 int main() {
     // Create socket
@@ -24,31 +25,24 @@ int main() {
         exit(EXIT_FAILURE);
     }
     else{
-        printf("Daytime client:");
+        printf("Client connected.\n\n");
     }
 
-    char input[] = "";
+    // Ask user for integer
+    int integer;
+    printf("Enter an integer:\n");
+    scanf("%d", &integer);
+
+    // Send integer to server
+    write(client_socket, &integer, sizeof(int));
+
+    // Read and print message
     char message;
-    char end_marker = '*';
-    
-    // While connected, read message
-    while (TRUE) {
-        // Read message
-        fgets(input, sizeof(input), stdin);
-        
-        // Store message
-        read(client_socket, &message, sizeof(char));
+    read(client_socket, &message, sizeof(char));
+    printf("%c", message);
 
-        // Read message until end marker, then close connection
-        if (message == end_marker) {
-            printf("\n\nConnection closed.\n\n");
-            close(client_socket);
-            exit(EXIT_SUCCESS);
-        }
-
-        // Print full message
-        printf("%c", message);
-    }
-
-    return EXIT_SUCCESS;
+    // Close connection
+    printf("\n\nConnection closed.\n\n");
+    close(client_socket);
+    exit(EXIT_SUCCESS);
 }
