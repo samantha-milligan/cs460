@@ -4,6 +4,11 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+
 
 class ThreeAPlusOneWebServer {
 
@@ -25,7 +30,7 @@ class ThreeAPlusOneWebServer {
 
     // default constructor
     ThreeAPlusOneWebServer() {}
-        
+
     // print to stdout
     protected static void print(String s) {
         System.out.println(s);
@@ -38,7 +43,7 @@ class ThreeAPlusOneWebServer {
             log.flush();
         }
     }
-     
+
     synchronized void workerHasStarted() {
         notify();
     }
@@ -53,7 +58,17 @@ class ThreeAPlusOneWebServer {
         }
 
 
-        ServerSocket ss = new ServerSocket(port);
+        // ServerSocket ss = new ServerSocket(port);
+
+        ServerSocket ss = null;
+        
+        try{
+            ss = new ServerSocket(port);
+        }  catch (IOException ex) {
+            Logger.getLogger(ThreeAPlusOneWebServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Error starting server on port " + port);
+            System.exit(1);
+        }
         ThreeAPlusOneWorker worker = null;
 
         print("Start server loop");

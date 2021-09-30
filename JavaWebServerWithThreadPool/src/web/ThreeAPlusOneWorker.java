@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-class ThreeAPlusOneWorker extends Thread implements HttpConstants {
+class ThreeAPlusOneWorker extends Thread {
 
     final static int BUF_SIZE = 2048;
     static final byte[] EOL = {(byte) '\r', (byte) '\n'};
@@ -76,11 +76,6 @@ class ThreeAPlusOneWorker extends Thread implements HttpConstants {
             buffer[i] = 0;
         }
         try {
-            /* We only support HTTP GET/HEAD, and don't
-             * support any fancy HTTP options,
-             * so we're only interested really in
-             * the first line.
-             */
             int nread = 0, r = 0;
 
             outerloop:
@@ -90,6 +85,9 @@ class ThreeAPlusOneWorker extends Thread implements HttpConstants {
                     /* EOF */
                     return;
                 }
+                
+                
+                
                 int i = nread;
                 nread += r;
                 for (; i < nread; i++) {
