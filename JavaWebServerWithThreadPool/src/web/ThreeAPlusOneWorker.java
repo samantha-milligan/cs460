@@ -64,7 +64,7 @@ class ThreeAPlusOneWorker extends Thread {
 
     void handleClient() throws IOException {
         InputStream is = new BufferedInputStream(socket.getInputStream());
-        
+        System.out.println("input stream end");
         /* we will only block in read for this many milliseconds
          * before we fail with java.io.InterruptedIOException,
          * at which point we will abandon the connection.
@@ -77,31 +77,44 @@ class ThreeAPlusOneWorker extends Thread {
         try {
             int nread = 0, r = 0;
 
+            System.out.println("before buffer assignment");
             outerloop:
             while (nread < BUF_SIZE) {
                 r = is.read(buffer, nread, BUF_SIZE - nread);
                 if (r == -1) {
                     /* EOF */
-                    return;
+                    break;
                 }
                 
+               
                 
-                
-                int i = nread;
+                /*int i = nread;
                 nread += r;
-                for (; i < nread; i++) {
+                for (; i < 1; i++) {
                     if (buffer[i] == (byte) '\n' || buffer[i] == (byte) '\r') {
-                        /* read one line */
+                        /* read one line *//*
                         break outerloop;
                     }
-                }
+                }*/
+                System.out.println("after buffer stuff");
+                break outerloop;
             }
             
             // buffer i - 1 holds 
             
+            // assume 1 byte sent
+            
+            //int input = (int) buffer[0];
+            System.out.println("after outerloop");
+            int input = 80;
+            
             OutputStream os = socket.getOutputStream();
             
-            os.write( (byte) 80);
+            System.out.println("after get outputstream");
+            
+            os.write( (byte) input);
+            
+            System.out.println("end?");
             
         } finally {
             socket.close();
