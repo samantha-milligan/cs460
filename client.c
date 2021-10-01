@@ -30,20 +30,16 @@ int main() {
 
     // Ask user for integer
     int integer;
-    printf("Integer: \n\n");
+    printf("Integer: ");
     scanf("%d", &integer);
+    printf("\n\n");
 
     // Send integer to server
     write(client_socket, &integer, sizeof(int));
 
     // Read and print message
-<<<<<<< HEAD
     printf("Steps: \n\n");
     char message;
-=======
-    printf("Steps: ");
-    int message;
->>>>>>> b8f3f321c2e2bb84988ca2f580b85ea34286a520
     read(client_socket, &message, sizeof(char));
     printf("%d", message);
 
