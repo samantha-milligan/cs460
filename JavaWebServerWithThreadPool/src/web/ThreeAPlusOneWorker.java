@@ -63,61 +63,32 @@ class ThreeAPlusOneWorker extends Thread {
     }
 
     void handleClient() throws IOException {
-        InputStream is = new BufferedInputStream(socket.getInputStream());
-        System.out.println("input stream end");
-        /* we will only block in read for this many milliseconds
-         * before we fail with java.io.InterruptedIOException,
-         * at which point we will abandon the connection.
-         */
-     
-        /* zero out the buffer from last time */
-        for (int i = 0; i < BUF_SIZE; i++) {
-            buffer[i] = 0;
-        }
-        try {
-            int nread = 0, r = 0;
+        System.out.println("Client connected.\n");
+        
+        DataInputStream fromClient = new DataInputStream(socket.getInputStream());
+        DataOutputStream toClient = new DataOutputStream(socket.getOutputStream());
 
-            System.out.println("before buffer assignment");
-            outerloop:
-            while (nread < BUF_SIZE) {
-                r = is.read(buffer, nread, BUF_SIZE - nread);
-                if (r == -1) {
-                    /* EOF */
-                    break;
-                }
-                
-               
-                
-                /*int i = nread;
-                nread += r;
-                for (; i < 1; i++) {
-                    if (buffer[i] == (byte) '\n' || buffer[i] == (byte) '\r') {
-                        /* read one line *//*
-                        break outerloop;
-                    }
-                }*/
-                System.out.println("after buffer stuff");
-                break outerloop;
+        int numSteps = 0;
+        int integer = fromClient.readByte();
+        System.out.print("Integer: ");
+        System.out.println(integer);
+
+        while (integer != 1) {
+            if(integer % 2 == 0 ) {
+                integer /= 2;
+            }
+            else {
+                integer = integer * 3 + 1;
             }
             
-            // buffer i - 1 holds 
-            
-            // assume 1 byte sent
-            
-            //int input = (int) buffer[0];
-            System.out.println("after outerloop");
-            int input = 80;
-            
-            OutputStream os = socket.getOutputStream();
-            
-            System.out.println("after get outputstream");
-            
-            os.write( (byte) input);
-            
-            System.out.println("end?");
-            
-        } finally {
-            socket.close();
+            numSteps += 1;
         }
+            toClient.writeByte(numSteps);
+            System.out.print("Steps: ");
+            System.out.println(numSteps);
+            
+            System.out.println("\nConnection closed.");
+            socket.close();
+            
     }
 }

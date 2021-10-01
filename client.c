@@ -38,9 +38,9 @@ int main() {
 
     // Read and print message
     printf("Steps: ");
-    char message;
+    int message;
     read(client_socket, &message, sizeof(char));
-    printf("%c", message);
+    printf("%d", message);
 
     // Close connection
     printf("\n\nConnection closed.\n\n");
