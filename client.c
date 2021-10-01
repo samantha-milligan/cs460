@@ -38,10 +38,10 @@ int main() {
     write(client_socket, &integer, sizeof(int));
 
     // Read and print message
-    printf("Steps: \n\n");
+    printf("Steps: ");
     char message;
     read(client_socket, &message, sizeof(char));
-    printf("%d", message);
+    printf("%d\n\n", message);
 
     // Close connection
     printf("\n\nConnection closed.\n\n");

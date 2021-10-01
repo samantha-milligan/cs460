@@ -66,11 +66,13 @@ class ThreeAPlusOneWorker extends Thread {
             InputStream is = new BufferedInputStream(socket.getInputStream());
             OutputStream os = socket.getOutputStream();
           
+            for (int i = 0; i < BUF_SIZE; i++) {
+            buffer[i] = 0;
+            }
+            
             int nread = 0;
             
             int r = is.read(buffer, nread, BUF_SIZE - nread);
-         
-            
             
             int input = (int) buffer[0];
 
