@@ -70,9 +70,10 @@ class ThreeAPlusOneWorker extends Thread {
             
             int r = is.read(buffer, nread, BUF_SIZE - nread);
          
-           
+            
+            
             int input = (int) buffer[0];
-            System.out.println(input);
+
             int steps = 0;
   
             while (input != 1) {
@@ -87,8 +88,6 @@ class ThreeAPlusOneWorker extends Thread {
             }
             
             os.write((byte) steps);
-            
-            os.write(steps);
             
             System.out.println("\nConnection closed.");
             socket.close();
