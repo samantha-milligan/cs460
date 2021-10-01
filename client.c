@@ -30,17 +30,17 @@ int main() {
 
     // Ask user for integer
     int integer;
-    printf("Integer: ");
+    printf("Integer: \n\n");
     scanf("%d", &integer);
 
     // Send integer to server
     write(client_socket, &integer, sizeof(int));
 
     // Read and print message
-    printf("Steps: ");
+    printf("Steps: \n\n");
     char message;
     read(client_socket, &message, sizeof(char));
-    printf("%c", message);
+    printf("%d", message);
 
     // Close connection
     printf("\n\nConnection closed.\n\n");
