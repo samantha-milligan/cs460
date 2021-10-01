@@ -63,18 +63,12 @@ class ThreeAPlusOneWorker extends Thread {
     }
 
     void handleClient() throws IOException {
-            InputStream is = new BufferedInputStream(socket.getInputStream());
-            OutputStream os = socket.getOutputStream();
+            DataInputStream fromClient = new DataInputStream(socket.getInputStream());
+            DataOutputStream toClient = new DataOutputStream(socket.getOutputStream());
           
-            for (int i = 0; i < BUF_SIZE; i++) {
-            buffer[i] = 0;
-            }
+           
             
-            int nread = 0;
-            
-            int r = is.read(buffer, nread, BUF_SIZE - nread);
-            
-            int input = (int) buffer[0];
+            int input = fromClient.readByte();
 
             int steps = 0;
   
@@ -89,7 +83,7 @@ class ThreeAPlusOneWorker extends Thread {
                 steps = steps + 1;
             }
             
-            os.write((byte) steps);
+            toClient.writeByte(steps);
             
             System.out.println("\nConnection closed.");
             socket.close();
