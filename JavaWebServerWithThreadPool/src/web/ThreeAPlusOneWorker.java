@@ -64,13 +64,12 @@ class ThreeAPlusOneWorker extends Thread {
 
     void handleClient() throws IOException {
         InputStream is = new BufferedInputStream(socket.getInputStream());
-        PrintStream ps = new PrintStream(socket.getOutputStream());
+        
         /* we will only block in read for this many milliseconds
          * before we fail with java.io.InterruptedIOException,
          * at which point we will abandon the connection.
          */
-        //socket.setSoTimeout(webServer.timeout);
-        //socket.setTcpNoDelay(true);
+     
         /* zero out the buffer from last time */
         for (int i = 0; i < BUF_SIZE; i++) {
             buffer[i] = 0;
@@ -97,6 +96,12 @@ class ThreeAPlusOneWorker extends Thread {
                     }
                 }
             }
+            
+            // buffer i - 1 holds 
+            
+            OutputStream os = socket.getOutputStream();
+            
+            os.write( (byte) 80);
             
         } finally {
             socket.close();
