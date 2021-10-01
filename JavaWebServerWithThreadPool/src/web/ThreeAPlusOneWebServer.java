@@ -71,7 +71,6 @@ class ThreeAPlusOneWebServer {
         }
         ThreeAPlusOneWorker worker = null;
 
-        print("Start server loop");
         while (true) {
 
             Socket clientSocket = ss.accept();

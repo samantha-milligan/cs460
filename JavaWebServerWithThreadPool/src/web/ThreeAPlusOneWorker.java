@@ -63,29 +63,32 @@ class ThreeAPlusOneWorker extends Thread {
     }
 
     void handleClient() throws IOException {
-        System.out.println("Client connected.\n");
-        
-        DataInputStream fromClient = new DataInputStream(socket.getInputStream());
-        DataOutputStream toClient = new DataOutputStream(socket.getOutputStream());
-
-        int numSteps = 0;
-        int integer = fromClient.readByte();
-        System.out.print("Integer: ");
-        System.out.println(integer);
-
-        while (integer != 1) {
-            if(integer % 2 == 0 ) {
-                integer /= 2;
-            }
-            else {
-                integer = integer * 3 + 1;
+            InputStream is = new BufferedInputStream(socket.getInputStream());
+            OutputStream os = socket.getOutputStream();
+          
+            int nread = 0;
+            
+            int r = is.read(buffer, nread, BUF_SIZE - nread);
+         
+           
+            int input = (int) buffer[0];
+            System.out.println(input);
+            int steps = 0;
+  
+            while (input != 1) {
+                if( input % 2 == 0 ) {
+                    input = input / 2;
+                }  
+                else {
+                    input = (input * 3) + 1;
+                }
+                
+                steps = steps + 1;
             }
             
-            numSteps += 1;
-        }
-            toClient.writeByte(numSteps);
-            System.out.print("Steps: ");
-            System.out.println(numSteps);
+            os.write((byte) steps);
+            
+            os.write(steps);
             
             System.out.println("\nConnection closed.");
             socket.close();
