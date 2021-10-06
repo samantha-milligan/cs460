@@ -1,5 +1,11 @@
 #include "c_server.h"
 
+
+// Sam's Notes
+// TODO
+    // Need to set up a mutex
+    // within server loop (before accept call), lock mutex
+
 /************************************************************************
  * MAIN
  ************************************************************************/

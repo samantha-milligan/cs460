@@ -1,6 +1,17 @@
 #include "client.h"
 #include "threadpool.h"
 
+// Sam's Notes
+// TODO
+    // client can create massive loads on server
+    // used for stress-testing server
+    // need to define # of threads in a threadpool
+    // each thread connected to server, continuous
+    // 1 connection terminates --> another thread started & connected to server
+    // define # tasks done by parallel connections
+        // computing 3A+1 steps (locally not on server) for #s 1-100,000
+    // uses given threadpool library
+
 /* ******************************************************* */
 /* main()                                                  */
 /* ******************************************************* */
