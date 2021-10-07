@@ -8,7 +8,7 @@
 #include "dbg.h"
 
 // maximum number of threads allowed in a pool
-#define THREADS_IN_POOL 100
+#define THREADS_IN_POOL 30
 
 // structure represent tasks
 typedef struct task_st {
@@ -27,7 +27,7 @@ typedef struct _threadpool_st {
     // threads
     int thread_count;
     pthread_t *threads;
-    
+
     // mutex and conditions
     pthread_mutex_t task_init_guard;
     pthread_mutex_t thread_pool_guard;
@@ -67,4 +67,3 @@ void threadpool_add_task(threadpool my_thread_pool, task_copy_arguments_function
 
 // destroy threadpool
 void threadpool_destroy(threadpool my_thread_pool);
-

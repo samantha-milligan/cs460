@@ -1,4 +1,4 @@
-#include "c_server.h"
+#include "server.h"
 
 
 // Sam's Notes
@@ -9,6 +9,47 @@
 /************************************************************************
  * MAIN
  ************************************************************************/
+
+ /* ******************************************************* */
+ /* three_a_plus_one() - nonrecursive                       */
+ /* ******************************************************* */
+ int three_a_plus_one(int input)
+ {
+     int counter = 0;
+     int current = input;
+
+     while (current != 1)
+     {
+         counter++;
+         if (current % 2) {
+             current = (current*3) + 1;
+         }
+         else {
+             current >>= 1;
+         }
+     }
+     return counter;
+ }
+
+
+ /* ******************************************************* */
+ /* three_a_plus_one_rec() - recursive                          */
+ /* ******************************************************* */
+ int three_a_plus_one_rec(int number) {
+     int new_number;
+
+     if (number == 1) {
+         return 0;
+     }
+
+     if (number % 2) {
+         new_number = 3 * number + 1;
+     } else {
+         new_number = number / 2;
+     }
+
+     return 1 + three_a_plus_one(new_number);
+ }
 
 int main(int argc, char** argv) {
     int server_socket;                          // descriptor of server socket
@@ -75,6 +116,8 @@ int main(int argc, char** argv) {
     }
 }
 
+// use threadpool for server
+// each connection has own socket
 
 /************************************************************************
  * handle client

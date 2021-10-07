@@ -14,8 +14,9 @@
 #define DBG
 #include "dbg.h"
 
-int three_a_plus_one(int input);
-int three_a_plus_one_rec(int input);
+// include socket functions
+#include <signal.h>
+
 void three_a_plus_one_wrapper(void *number_ptr);
 
 #define NUMBER_TASKS 100000
