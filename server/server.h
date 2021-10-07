@@ -1,36 +1,40 @@
 /************************************************************************
  * libraries
  ************************************************************************/
-// Necessary, standard libraries
+// should always be there ...
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-// Socket libraries
+// socket/bind/listen/accept
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h>
+#include <signal.h>
 
-// Input/output libraries
+// read/write/close
 #include <sys/uio.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+// threads
+#include <pthread.h>
+
 /************************************************************************
  * function prototype declarations
  ************************************************************************/
-void handle_client(int client_socket);
+void *handle_client(void *pthreaded_client_socket);
 
 /************************************************************************
  * preprocessor directives
  ************************************************************************/
-// Define server address and port
-#define SERVER_ADDR "127.0.0.1" // localhost
-#define PORT 23657
+#define SERVER_ADDR "127.0.0.1" // loopback ip address
+#define PORT 23657              // port the server will listen on
 
-// Naming conventions
+// I cannot let go of the old-fashioned way :) - for readability ...
+#define FALSE false
 #define TRUE !false
 
-// Number of pending connections in the connection queue
+// number of pending connections in the connection queue
 #define NUM_CONNECTIONS 1
+#define MAX_NUM_CONT_CLIENTS 2
