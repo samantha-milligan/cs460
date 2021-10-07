@@ -14,12 +14,12 @@
 #define DBG
 #include "dbg.h"
 
-// include socket functions
-#include <signal.h>
+// Function declarations
+void talk_to_server(void *number_ptr);
 
-void three_a_plus_one_wrapper(void *number_ptr);
-
+// Define number of tasks
 #define NUMBER_TASKS 100000
 
-#define FALSE 0
-#define TRUE !FALSE
+// Define server address and port
+#define SERVER_ADDR "132.163.97.6"
+#define PORT 13

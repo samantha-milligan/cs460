@@ -1,63 +1,71 @@
 #include "client.h"
 #include "threadpool.h"
 
-// Sam's Notes
-// TODO
-    // client can create massive loads on server
-    // used for stress-testing server
-    // need to define # of threads in a threadpool
-    // each thread connected to server, continuous
-    // 1 connection terminates --> another thread started & connected to server
-    // define # tasks done by parallel connections
-        // computing 3A+1 steps (locally not on server) for #s 1-100,000
-    // uses given threadpool library
-
-/* ******************************************************* */
-/* main()                                                  */
-/* ******************************************************* */
 int main() {
-
-    // task counter, also serves as argument to 3A+1 algorithm
+    
+    // task counter
     int task_counter;
-
+    
     // create threadpool with THREADS_IN_POOL threads
     threadpool pool = threadpool_create();
 
-
+    
     for (task_counter=1; task_counter<=NUMBER_TASKS; task_counter++)
     {
-        // in each loop, execute three_a_plus_one_wrapper in a thread from the pool
-        threadpool_add_task(pool, task_copy_arguments, three_a_plus_one_wrapper, (void*)&task_counter);
+        // in each loop, execute talk_to_server in a thread from the pool
+        threadpool_add_task(pool, task_copy_arguments, talk_to_server, (void*)&task_counter);
     }
 
     // lame way to wait for everybody to get done
     // in a network server, this is not needed as the main thread keeps accepting connections
-    sleep(8);
-
+    sleep(THREADS_IN_POOL);
+    
     exit(EXIT_SUCCESS);
 }
 
+void talk_to_server(void *number_ptr) {
+    
+    // Create socket
+    int client_socket;
+    client_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-/* ******************************************************* */
-/* three_a_plus_one_wrapper()                              */
-/* ******************************************************* */
-void three_a_plus_one_wrapper(void *number_ptr)
-{
-    int number = *((int*)number_ptr);
+    // Define socket address
+    struct sockaddr_in client_address;
+    client_address.sin_addr.s_addr = inet_addr(SERVER_ADDR);
+    client_address.sin_family = AF_INET;
+    client_address.sin_port = htons(PORT);
 
-    printf("\nthread ID %p ----> %d: %d", pthread_self(), number, three_a_plus_one_rec(number));
+    // If no connection, return fail
+    if (connect(client_socket, (struct sockaddr *)&client_address, sizeof(client_address)) == -1) {
+        perror("Connection failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Integer to send to server
+    int integer = *((int*)number_ptr);
+    printf("Integer: ");
+    printf("%d\n", integer);
+
+    // Send integer to server
+    write(client_socket, &integer, sizeof(int));
+
+    // Read and print message
+    char step_number;
+    read(client_socket, &step_number, sizeof(char));
+    printf("Steps: ");
+    printf("%c\n", step_number);
+
+    // Close connection
+    close(client_socket);
 }
 
-
-/* ******************************************************* */
-/* prepare arguments for thread function                   */
-/* ******************************************************* */
-void *task_copy_arguments(void *args_in)
-{
+// Prepare arguments for thread function
+void *task_copy_arguments(void *args_in) {
+    
     void *args_out;
-
+    
     args_out = malloc(sizeof(int));
     *((int*)args_out) = *((int*)args_in);
-
+    
     return args_out;
 }

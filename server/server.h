@@ -24,9 +24,8 @@
  * function prototype declarations
  ************************************************************************/
 void *handle_client(void *pthreaded_client_socket);
-
 int three_a_plus_one(int input);
-int three_a_plus_one_rec(int input);
+int three_a_plus_one_rec(int number);
 
 /************************************************************************
  * preprocessor directives

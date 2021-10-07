@@ -1,56 +1,6 @@
 #include "server.h"
 
 
-// Sam's Notes
-// TODO
-    // Need to set up a mutex
-    // within server loop (before accept call), lock mutex
-
-/************************************************************************
- * MAIN
- ************************************************************************/
-
- /* ******************************************************* */
- /* three_a_plus_one() - nonrecursive                       */
- /* ******************************************************* */
- int three_a_plus_one(int input)
- {
-     int counter = 0;
-     int current = input;
-
-     while (current != 1)
-     {
-         counter++;
-         if (current % 2) {
-             current = (current*3) + 1;
-         }
-         else {
-             current >>= 1;
-         }
-     }
-     return counter;
- }
-
-
- /* ******************************************************* */
- /* three_a_plus_one_rec() - recursive                          */
- /* ******************************************************* */
- int three_a_plus_one_rec(int number) {
-     int new_number;
-
-     if (number == 1) {
-         return 0;
-     }
-
-     if (number % 2) {
-         new_number = 3 * number + 1;
-     } else {
-         new_number = number / 2;
-     }
-
-     return 1 + three_a_plus_one(new_number);
- }
-
 int main(int argc, char** argv) {
     int server_socket;                          // descriptor of server socket
     struct sockaddr_in server_address;          // for naming the server's listening socket
@@ -86,6 +36,8 @@ int main(int argc, char** argv) {
         perror("Error listening on socket");
         exit(EXIT_FAILURE);
     }
+    // Initialize mutex
+    int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
 
     // server loop
     while (TRUE) {
@@ -99,7 +51,8 @@ int main(int argc, char** argv) {
           }
         }
 
-        //printf("\navail_socket: %i\n", avail_socket);
+        // Lock mutex
+        int pthread_mutex_lock(pthread_mutex_t *mutex);
 
         // if all conections are busy
         if (client_socket[avail_socket] != 0 && avail_socket == MAX_NUM_CONT_CLIENTS) {
@@ -111,62 +64,73 @@ int main(int argc, char** argv) {
             printf("\nAccepted client\n");
 
             pthread_create(&pthread_id[avail_socket], NULL, handle_client, client_socket + avail_socket);
+
+            // Unlock mutex
+            int pthread_mutex_unlock(pthread_mutex_t *mutex);
+
             pthread_detach(pthread_id[avail_socket]);
         }
     }
 }
 
-// use threadpool for server
-// each connection has own socket
-
-/************************************************************************
- * handle client
- ************************************************************************/
-
 void *handle_client(void *pthreaded_client_socket) {
-    //printf("\nclient socket: %i\n", client_socket);
     int* client_socket_ptr = (int*) pthreaded_client_socket;
     int client_socket = *((int*) pthreaded_client_socket);
 
-    char input;
+    int integer, step_number;
     int keep_going = TRUE;
-    int close_val = 0;
 
     while (keep_going) {
-        // read char from client
-        switch (read(client_socket, &input, sizeof(char))) {
-            case 0:
-                keep_going = FALSE;
-                printf("\nEnd of stream, returning ...\n");
-                break;
-            case -1:
-                perror("Error reading from network!\n");
-                keep_going = FALSE;
-                break;
-        }
+        // Read from client
+        read(client_socket, &integer, sizeof(int));
+        printf("Integer: ");
+        printf("%d\n", integer);
 
-        printf("%c", input);
-
-        // check if we terminate
-        if (input == 'q') {
-            keep_going = FALSE;
-        }
-
+        // Compute algorithm steps
+        step_number = three_a_plus_one_rec(integer);
+        printf("Steps: ");
+        printf("%d\n", step_number);
 
         // send result back to client
-        write(client_socket, &input, sizeof(char));
-
+        write(client_socket, &step_number, sizeof(int));
     }
 
-    // cleanup
+    close(client_socket);
+}
 
-    close_val = close(client_socket);
-    *client_socket_ptr = 0;           // change client_socket array in main
+// Non-recursive 3A+1 algorithm
+int three_a_plus_one(int input)
+{
+    int counter = 0;
+    int current = input;
 
-    if (close_val == -1) {
-        perror("Error closing socket\n");
-        exit(EXIT_FAILURE);
+    while (current != 1)
+    {
+        counter++;
+        if (current % 2) {
+            current = (current*3) + 1;
+        }
+        else {
+            current >>= 1;
+        }
+    }
+    return counter;
+}
+
+
+// Recursive 3A+1 algorithm
+int three_a_plus_one_rec(int number) {
+    int new_number;
+    
+    if (number == 1) {
+        return 0;
+    }
+    
+    if (number % 2) {
+        new_number = 3 * number + 1;
     } else {
-        printf("\nClosed socket to client, exit\n");
+        new_number = number / 2;
     }
+    
+    return 1 + three_a_plus_one(new_number);
 }
