@@ -78,22 +78,19 @@ void *handle_client(void *pthreaded_client_socket) {
     int client_socket = *((int*) pthreaded_client_socket);
 
     int integer, step_number;
-    int keep_going = TRUE;
 
-    while (keep_going) {
-        // Read from client
-        read(client_socket, &integer, sizeof(int));
-        printf("Integer: ");
-        printf("%d\n", integer);
+    // Read from client
+    read(client_socket, &integer, sizeof(int));
+    printf("Integer: ");
+    printf("%d\n", integer);
 
-        // Compute algorithm steps
-        step_number = three_a_plus_one_rec(integer);
-        printf("Steps: ");
-        printf("%d\n", step_number);
+    // Compute algorithm steps
+    step_number = three_a_plus_one_rec(integer);
+    printf("Steps: ");
+    printf("%d\n", step_number);
 
-        // send result back to client
-        write(client_socket, &step_number, sizeof(int));
-    }
+    // send result back to client
+    write(client_socket, &step_number, sizeof(int));
 
     close(client_socket);
 }

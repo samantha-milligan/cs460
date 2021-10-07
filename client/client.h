@@ -21,5 +21,5 @@ void talk_to_server(void *number_ptr);
 #define NUMBER_TASKS 100000
 
 // Define server address and port
-#define SERVER_ADDR "132.163.97.6"
-#define PORT 13
+#define SERVER_ADDR "127.0.0.1"
+#define PORT 23657

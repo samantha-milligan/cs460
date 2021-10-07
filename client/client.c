@@ -50,10 +50,10 @@ void talk_to_server(void *number_ptr) {
     write(client_socket, &integer, sizeof(int));
 
     // Read and print message
-    char step_number;
-    read(client_socket, &step_number, sizeof(char));
+    int step_number;
+    read(client_socket, &step_number, sizeof(int));
     printf("Steps: ");
-    printf("%c\n", step_number);
+    printf("%d\n", step_number);
 
     // Close connection
     close(client_socket);
