@@ -38,5 +38,5 @@ int three_a_plus_one_rec(int number);
 #define TRUE !false
 
 // number of pending connections in the connection queue
-#define NUM_CONNECTIONS 1
+#define NUM_CONNECTIONS 100
 #define MAX_NUM_CONT_CLIENTS 2
