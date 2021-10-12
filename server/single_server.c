@@ -58,19 +58,23 @@ void handle_client(int client_socket) {
 
     // Read from client
     read(client_socket, &integer, sizeof(int));
-    printf("Integer: ");
-    printf("%d\n", integer);
 
     // Compute algorithm steps
     step_number = three_a_plus_one_rec(integer);
-    printf("Steps: ");
-    printf("%d\n", step_number);
 
     // send result back to client
     write(client_socket, &step_number, sizeof(int));
 
+    // mandated .5 second delay
+    sleep(500);
+
     // cleanup
     close(client_socket);
+
+    // output the inputted number and the steps
+    printf("\n%d   ------->   ", integer);
+    printf("%d\n", step_number);
+
 }
 
 // Non-recursive 3A+1 algorithm
