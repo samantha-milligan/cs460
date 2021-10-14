@@ -4,7 +4,7 @@
 int main(int argc, char** argv) {
     int server_socket;                          // descriptor of server socket
     struct sockaddr_in server_address;          // for naming the server's listening socket
-    int client_socket[MAX_NUM_CONT_CLIENTS];    // number of clients we can accept
+    int client_socket;    // number of clients we can accept
 
     int avail_socket;                           // use this socket new connections
     pthread_t pthread_id[MAX_NUM_CONT_CLIENTS];
@@ -41,27 +41,11 @@ int main(int argc, char** argv) {
 
     // server loop
     while (TRUE) {
-        avail_socket = 0;
 
-        int test_socket;
-
-        // check which index in client_socket available
-        for (loop_for_avail = 0; loop_for_avail < MAX_NUM_CONT_CLIENTS; loop_for_avail++) {
-            if (client_socket[loop_for_avail] == 0 ) {
-                avail_socket = loop_for_avail;
-                break;
-          }
-        }
-
-
-        // if all conections are busy
-        if (client_socket[avail_socket] != 0 && avail_socket == MAX_NUM_CONT_CLIENTS) {
-            continue;
-        } // accept connection to client and send handling to pthread
-        else if ((client_socket[avail_socket] = accept(server_socket, NULL, NULL)) == -1) {
+        if ((client_socket = accept(server_socket, NULL, NULL)) == -1) {
             perror("Error accepting client");
         } else {
-            threadpool_add_task(pool, task_copy_arguments, handle_client, client_socket + avail_socket);
+            threadpool_add_task(pool, task_copy_arguments, handle_client, (void*)&client_socket);
         }
     }
 }
@@ -86,10 +70,12 @@ void *handle_client(void *pthreaded_client_socket) {
     printf("%d\n", step_number);
 
     // mandated .5 second delay
-    sleep(500);
+    //usleep(500);
 
     // cleanup
     close(client_socket);
+
+    return;
 }
 
 // Non-recursive 3A+1 algorithm
