@@ -2,14 +2,14 @@
 #include "threadpool.h"
 
 int main() {
-    
+
     // task counter
     int task_counter;
-    
+
     // create threadpool with THREADS_IN_POOL threads
     threadpool pool = threadpool_create();
 
-    
+
     for (task_counter=1; task_counter<=NUMBER_TASKS; task_counter++)
     {
         // in each loop, execute talk_to_server in a thread from the pool
@@ -19,12 +19,12 @@ int main() {
     // lame way to wait for everybody to get done
     // in a network server, this is not needed as the main thread keeps accepting connections
     sleep(THREADS_IN_POOL);
-    
+
     exit(EXIT_SUCCESS);
 }
 
 void talk_to_server(void *number_ptr) {
-    
+
     // Create socket
     int client_socket;
     client_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -43,8 +43,6 @@ void talk_to_server(void *number_ptr) {
 
     // Integer to send to server
     int integer = *((int*)number_ptr);
-    printf("Integer: ");
-    printf("%d\n", integer);
 
     // Send integer to server
     write(client_socket, &integer, sizeof(int));
@@ -52,8 +50,8 @@ void talk_to_server(void *number_ptr) {
     // Read and print message
     int step_number;
     read(client_socket, &step_number, sizeof(int));
-    printf("Steps: ");
-    printf("%d\n", step_number);
+
+    sleep(8);
 
     // Close connection
     close(client_socket);
@@ -61,11 +59,11 @@ void talk_to_server(void *number_ptr) {
 
 // Prepare arguments for thread function
 void *task_copy_arguments(void *args_in) {
-    
+
     void *args_out;
-    
+
     args_out = malloc(sizeof(int));
     *((int*)args_out) = *((int*)args_in);
-    
+
     return args_out;
 }
