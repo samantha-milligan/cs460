@@ -51,7 +51,15 @@ void talk_to_server(void *number_ptr) {
     int step_number;
     read(client_socket, &step_number, sizeof(int));
 
+<<<<<<< HEAD
     sleep(8);
+=======
+    // New format printing Number ---> Steps
+    printf("Number: %d ----> Steps: %c \n",integer,step_number);
+
+    //500 millisecond delay before closing
+    sleep(0.500);
+>>>>>>> cccdcd4f006641889615dcc4a9a17572193847d2
 
     // Close connection
     close(client_socket);
