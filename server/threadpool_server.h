@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <fcntl.h>
+#include <signal.h>
 
 // threads
 #include <pthread.h>
@@ -27,6 +28,7 @@
 void *handle_client(void *pthreaded_client_socket);
 int three_a_plus_one(int input);
 int three_a_plus_one_rec(int number);
+void *task_copy_arguments(void *args_in);
 
 /************************************************************************
  * preprocessor directives
