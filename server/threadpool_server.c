@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
         else if ((client_socket[avail_socket] = accept(server_socket, NULL, NULL)) == -1) {
             perror("Error accepting client");
         } else {
-            threadpool_add_task(pool, task_copy_arguments, handle_client, (void*)&test_socket);
+            threadpool_add_task(pool, task_copy_arguments, handle_client, client_socket + avail_socket);
         }
     }
 }
