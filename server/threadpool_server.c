@@ -43,6 +43,8 @@ int main(int argc, char** argv) {
     while (TRUE) {
         avail_socket = 0;
 
+        int test_socket;
+
         // check which index in client_socket available
         for (loop_for_avail = 0; loop_for_avail < MAX_NUM_CONT_CLIENTS; loop_for_avail++) {
             if (client_socket[loop_for_avail] == 0 ) {
@@ -59,7 +61,7 @@ int main(int argc, char** argv) {
         else if ((client_socket[avail_socket] = accept(server_socket, NULL, NULL)) == -1) {
             perror("Error accepting client");
         } else {
-            threadpool_add_task(pool, task_copy_arguments, handle_client, client_socket + avail_socket);
+            threadpool_add_task(pool, task_copy_arguments, handle_client, (void*)&test_socket);
         }
     }
 }
@@ -79,15 +81,15 @@ void *handle_client(void *pthreaded_client_socket) {
     // send result back to client
     write(client_socket, &step_number, sizeof(int));
 
+    // output the inputted number and the steps
+    printf("\n%d   ------->   ", integer);
+    printf("%d\n", step_number);
+
     // mandated .5 second delay
     sleep(500);
 
     // cleanup
     close(client_socket);
-
-    // output the inputted number and the steps
-    printf("\n%d   ------->   ", integer);
-    printf("%d\n", step_number);
 }
 
 // Non-recursive 3A+1 algorithm
