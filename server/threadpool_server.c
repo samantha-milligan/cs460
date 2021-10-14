@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
         else if ((client_socket[avail_socket] = accept(server_socket, NULL, NULL)) == -1) {
             perror("Error accepting client");
         } else {
-            threadpool_add_task(pool, task_copy_arguments, handle_client, (void*)&(client_socket + avail_socket));
+            threadpool_add_task(pool, task_copy_arguments, handle_client, client_socket + avail_socket);
         }
     }
 }
@@ -125,4 +125,15 @@ int three_a_plus_one_rec(int number) {
     }
 
     return 1 + three_a_plus_one(new_number);
+}
+
+// Prepare arguments for thread function
+void *task_copy_arguments(void *args_in) {
+
+    void *args_out;
+
+    args_out = malloc(sizeof(int));
+    *((int*)args_out) = *((int*)args_in);
+
+    return args_out;
 }
