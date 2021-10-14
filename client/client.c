@@ -43,8 +43,6 @@ void talk_to_server(void *number_ptr) {
 
     // Integer to send to server
     int integer = *((int*)number_ptr);
-    printf("Integer: ");
-    printf("%d\n", integer);
 
     // Send integer to server
     write(client_socket, &integer, sizeof(int));
@@ -52,8 +50,12 @@ void talk_to_server(void *number_ptr) {
     // Read and print message
     int step_number;
     read(client_socket, &step_number, sizeof(int));
-    printf("Steps: ");
-    printf("%d\n", step_number);
+
+    // New format printing Number ---> Steps
+    printf("Number: %d ----> Steps: %c \n",integer,step_number);
+
+    //500 millisecond delay before closing
+    sleep(0.500);
 
     // Close connection
     close(client_socket);
