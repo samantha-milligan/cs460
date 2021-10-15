@@ -7,4 +7,4 @@ client: threadpool.o
 	$(CC) -o client client.c threadpool.o -lpthread
 
 clean:
-	rm client
+	rm client threadpool.o
