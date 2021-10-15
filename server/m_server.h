@@ -20,6 +20,10 @@
 // threads
 #include <pthread.h>
 
+// turn on debugging
+#define DBG
+#include "dbg.h"
+
 /************************************************************************
  * function prototype declarations
  ************************************************************************/

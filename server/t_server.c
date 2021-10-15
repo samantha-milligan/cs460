@@ -1,14 +1,12 @@
-#include "threadpool_server.h"
+#include "t_server.h"
 #include "threadpool.h"
 
 int main(int argc, char** argv) {
     int server_socket;                          // descriptor of server socket
     struct sockaddr_in server_address;          // for naming the server's listening socket
-    int client_socket;    // number of clients we can accept
+    int client_socket;
 
-    int avail_socket;                           // use this socket new connections
     pthread_t pthread_id[MAX_NUM_CONT_CLIENTS];
-    int loop_for_avail;
 
     // sent when, client disconnected
     signal(SIGPIPE, SIG_IGN);
@@ -41,7 +39,6 @@ int main(int argc, char** argv) {
 
     // server loop
     while (TRUE) {
-
         if ((client_socket = accept(server_socket, NULL, NULL)) == -1) {
             perror("Error accepting client");
         } else {
@@ -56,26 +53,29 @@ void *handle_client(void *pthreaded_client_socket) {
 
     int integer, step_number;
 
+    log_info("Socket number when opening: %d", client_socket);
+
     // Read from client
     read(client_socket, &integer, sizeof(int));
 
+    log_info("Number received from client: %d", integer);
+
     // Compute algorithm steps
     step_number = three_a_plus_one_rec(integer);
+
+    log_info("Number of steps sent to client: %d", step_number);
 
     // send result back to client
     write(client_socket, &step_number, sizeof(int));
 
     // output the inputted number and the steps
-    printf("\n%d   ------->   ", integer);
+    printf("\nNumber: %d ----> Steps:", integer);
     printf("%d\n", step_number);
-
-    // mandated .5 second delay
-    //usleep(500);
 
     // cleanup
     close(client_socket);
 
-    return;
+    log_info("Socket number when closing: %d", client_socket);
 }
 
 // Non-recursive 3A+1 algorithm

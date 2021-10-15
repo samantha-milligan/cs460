@@ -1,15 +1,17 @@
-#include "single_server.h"
+#include "m_server.h"
+#include "dbg.h"
 
-/************************************************************************
- * MAIN
- ************************************************************************/
 
 int main(int argc, char** argv) {
-    int server_socket;                 // descriptor of server socket
-    struct sockaddr_in server_address; // for naming the server's listening socket
-    int client_socket;
+    int server_socket;                          // descriptor of server socket
+    struct sockaddr_in server_address;          // for naming the server's listening socket
+    int client_socket[MAX_NUM_CONT_CLIENTS];    // number of clients we can accept
 
-    // sent when ,client disconnected
+    int avail_socket;                           // use this socket new connections
+    pthread_t pthread_id[MAX_NUM_CONT_CLIENTS];
+    int loop_for_avail;
+
+    // sent when, client disconnected
     signal(SIGPIPE, SIG_IGN);
 
     // create unnamed network socket for server to listen on
@@ -28,39 +30,66 @@ int main(int argc, char** argv) {
         perror("Error binding socket");
         exit(EXIT_FAILURE);
     }
+    //
 
     // listen for client connections (pending connections get put into a queue)
     if (listen(server_socket, NUM_CONNECTIONS) == -1) {
         perror("Error listening on socket");
         exit(EXIT_FAILURE);
     }
+    // Initialize mutex
+    int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
 
     // server loop
     while (TRUE) {
+        avail_socket = 0;
 
-        // accept connection to client
-        if ((client_socket = accept(server_socket, NULL, NULL)) == -1) {
+        // check which index in client_socket available
+        for (loop_for_avail = 0; loop_for_avail < MAX_NUM_CONT_CLIENTS; loop_for_avail++) {
+            if (client_socket[loop_for_avail] == 0 ) {
+                avail_socket = loop_for_avail;
+                break;
+          }
+        }
+
+        // Lock mutex
+        int pthread_mutex_lock(pthread_mutex_t *mutex);
+
+        // if all conections are busy
+        if (client_socket[avail_socket] != 0 && avail_socket == MAX_NUM_CONT_CLIENTS) {
+            continue;
+        } // accept connection to client and send handling to pthread
+        else if ((client_socket[avail_socket] = accept(server_socket, NULL, NULL)) == -1) {
             perror("Error accepting client");
         } else {
-            printf("\nAccepted client\n");
-            handle_client(client_socket);
+
+            pthread_create(&pthread_id[avail_socket], NULL, handle_client, client_socket + avail_socket);
+
+            // Unlock mutex
+            int pthread_mutex_unlock(pthread_mutex_t *mutex);
+
+            pthread_detach(pthread_id[avail_socket]);
         }
     }
 }
 
+void *handle_client(void *pthreaded_client_socket) {
+    int* client_socket_ptr = (int*) pthreaded_client_socket;
+    int client_socket = *((int*) pthreaded_client_socket);
 
-/************************************************************************
- * handle client
- ************************************************************************/
-
-void handle_client(int client_socket) {
     int integer, step_number;
+
+    log_info("Socket number when opening: %d", client_socket);
 
     // Read from client
     read(client_socket, &integer, sizeof(int));
 
+    log_info("Number received from client: %d", integer);
+
     // Compute algorithm steps
     step_number = three_a_plus_one_rec(integer);
+
+    log_info("Number of steps sent to client: %d", step_number);
 
     // send result back to client
     write(client_socket, &step_number, sizeof(int));
@@ -71,10 +100,11 @@ void handle_client(int client_socket) {
     // cleanup
     close(client_socket);
 
+    log_info("Socket number when closing: %d", client_socket);
+
     // output the inputted number and the steps
     printf("\n%d   ------->   ", integer);
     printf("%d\n", step_number);
-
 }
 
 // Non-recursive 3A+1 algorithm

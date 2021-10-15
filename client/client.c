@@ -18,7 +18,7 @@ int main() {
 
     // lame way to wait for everybody to get done
     // in a network server, this is not needed as the main thread keeps accepting connections
-    sleep(THREADS_IN_POOL);
+    sleep(NUMBER_TASKS);
 
     exit(EXIT_SUCCESS);
 }
@@ -52,7 +52,7 @@ void talk_to_server(void *number_ptr) {
     read(client_socket, &step_number, sizeof(int));
 
     // New format printing Number ---> Steps
-    printf("Number: %d ----> Steps: %c \n",integer,step_number);
+    printf("Number: %d ----> Steps: %d \n",integer,step_number);
 
     // Close connection
     close(client_socket);

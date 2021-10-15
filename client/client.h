@@ -18,7 +18,7 @@
 void talk_to_server(void *number_ptr);
 
 // Define number of tasks
-#define NUMBER_TASKS 100000
+#define NUMBER_TASKS 1000
 
 // Define server address and port
 #define SERVER_ADDR "127.0.0.1"

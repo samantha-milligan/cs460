@@ -17,6 +17,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+// turn on debugging
+#define DBG
+#include "dbg.h"
+
 /************************************************************************
  * function prototype declarations
  ************************************************************************/
