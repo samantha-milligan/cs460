@@ -14,12 +14,3 @@ s_server:
 
 clean:
 	rm t_server m_server s_server threadpool.o
-
-# TAKE EMILY'S APPROACH
-# step through code, seeing what you can do.
-
-# gcc -c threadpool.c to make object file
-# gcc -o client client.c threadpool.o -lpthread
-# bind to threadpool.o and pthread lib
-
-# Wireshark packet snippet

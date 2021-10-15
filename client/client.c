@@ -18,7 +18,7 @@ int main() {
 
     // lame way to wait for everybody to get done
     // in a network server, this is not needed as the main thread keeps accepting connections
-    sleep(NUMBER_TASKS);
+    sleep(1);
 
     exit(EXIT_SUCCESS);
 }

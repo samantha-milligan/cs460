@@ -1,0 +1,23 @@
+For the single server:
+  - On the client side, the output remained in order as in the input numbers
+      appeared from 1 to 1000 in increments of 1.
+  - On the server side, the output appeared in order, in number order and the
+      order the logging statements appeared in the code.
+  - We suspect that the output occurred because the single server can only
+      connect to one client connection at a time, and the rest of the
+      client connections must wait for one connection to finish before
+      attempting to connect to the server.
+
+
+For the multithreaded server:
+  - On the client side,
+  - On the server side,
+  - We suspect that the output occurred because
+
+For the thread pool server:
+  - On the client side, it appeared that
+  - On the server side,
+  - We suspect that the output occurred in a more ordered manner, but based on
+      the output from the client and the server, the output appeared at random.
+      For example, for the client's output the number 77 popped up when it
+      looked like the numbers were well into the 100s.
