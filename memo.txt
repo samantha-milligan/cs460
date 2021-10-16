@@ -10,13 +10,21 @@ For the single server:
 
 
 For the multithreaded server:
-  - On the client side,
-  - On the server side,
-  - We suspect that the output occurred because
+  - On the client side, numbers from 28 to 101 are presented slightly out of
+      order.
+  - On the server side, the output inside the thread functions are always in
+      order, but the numbers received from the client are seemingly random.
+  - We suspect that the output occurred because a race condition we haven't
+      considered.
 
 For the thread pool server:
-  - On the client side, it appeared that
-  - On the server side,
+  - On the client side, it appears that the numbers are in order for the input
+      numbers 900 to 1000. However, there are instances where the output is
+      slightly out of order.
+  - On the server side, there are ranges where the output appears in order, but
+      there are also ranges where the output is random. For example, the output
+      that prints the number from client and its steps from the 3A + 1 function
+      29 times for a range of numbers between 601 and 629.
   - We suspect that the output occurred in a more ordered manner, but based on
       the output from the client and the server, the output appeared at random.
       For example, for the client's output the number 77 popped up when it
