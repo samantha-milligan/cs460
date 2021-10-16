@@ -1,15 +1,15 @@
 #include "m_server.h"
 #include "dbg.h"
 
+// Initialize mutex
+int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
 
 int main(int argc, char** argv) {
     int server_socket;                          // descriptor of server socket
     struct sockaddr_in server_address;          // for naming the server's listening socket
-    int client_socket[MAX_NUM_CONT_CLIENTS];    // number of clients we can accept
+    int client_socket;                          // number of clients we can accept
 
-    int avail_socket;                           // use this socket new connections
     pthread_t pthread_id[MAX_NUM_CONT_CLIENTS];
-    int loop_for_avail;
 
     // sent when, client disconnected
     signal(SIGPIPE, SIG_IGN);
@@ -37,38 +37,20 @@ int main(int argc, char** argv) {
         perror("Error listening on socket");
         exit(EXIT_FAILURE);
     }
-    // Initialize mutex
-    int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
 
     // server loop
     while (TRUE) {
-        avail_socket = 0;
-
-        // check which index in client_socket available
-        for (loop_for_avail = 0; loop_for_avail < MAX_NUM_CONT_CLIENTS; loop_for_avail++) {
-            if (client_socket[loop_for_avail] == 0 ) {
-                avail_socket = loop_for_avail;
-                break;
-          }
-        }
-
         // Lock mutex
         int pthread_mutex_lock(pthread_mutex_t *mutex);
 
-        // if all conections are busy
-        if (client_socket[avail_socket] != 0 && avail_socket == MAX_NUM_CONT_CLIENTS) {
-            continue;
-        } // accept connection to client and send handling to pthread
-        else if ((client_socket[avail_socket] = accept(server_socket, NULL, NULL)) == -1) {
+        // accept connection to client and send handling to pthread
+        if ((client_socket = accept(server_socket, NULL, NULL)) == -1) {
             perror("Error accepting client");
         } else {
 
-            pthread_create(&pthread_id[avail_socket], NULL, handle_client, client_socket + avail_socket);
+            pthread_create(&pthread_id, NULL, handle_client, (void*)&client_socket);
 
-            // Unlock mutex
-            int pthread_mutex_unlock(pthread_mutex_t *mutex);
-
-            pthread_detach(pthread_id[avail_socket]);
+            pthread_detach(pthread_id);
         }
     }
 }
@@ -84,6 +66,9 @@ void *handle_client(void *pthreaded_client_socket) {
     // Read from client
     read(client_socket, &integer, sizeof(int));
 
+    // Unlock mutex
+    int pthread_mutex_unlock(pthread_mutex_t *mutex);
+
     log_info("Number received from client: %d", integer);
 
     // Compute algorithm steps
@@ -95,7 +80,7 @@ void *handle_client(void *pthreaded_client_socket) {
     write(client_socket, &step_number, sizeof(int));
 
     // mandated .5 second delay
-    sleep(500);
+    //sleep(500);
 
     // cleanup
     close(client_socket);
