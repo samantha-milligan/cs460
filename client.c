@@ -1,7 +1,5 @@
 #include "server.h"
 
-// Daytime Client
-// Connects to NIST server and displays current UTC time
 
 int main() {
     // Create socket
