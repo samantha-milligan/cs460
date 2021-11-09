@@ -1,1 +1,9 @@
-
+Memo
+
+How do you communicate the different operations?
+
+How do you represent numbers, how are they dilimited, and how are they separated from the operations/operators?
+
+How do you communicate exceptional situations?
+
+How do you communicate shutting down a session of a client with the server?
