@@ -34,7 +34,6 @@ int main() {
     
     // While connected, read message
     while (TRUE) {
-
         // Ask user for operation
         printf("Input: ");
         scanf("%c", &user_input);
@@ -54,12 +53,11 @@ int main() {
         values = *separate_operators(user_input);
 
         // Send values to server
-        write(client_socket, &values, sizeof(values));
+        write(client_socket, &user_input, sizeof(user_input));
 
         // Read and print server message
         read(client_socket, &message, sizeof(char));
-        printf("Output: ");
-        printf("%c", message);
+        printf("Output: %c", message);
     }
 
     return EXIT_SUCCESS;
@@ -75,7 +73,8 @@ char *separate_operators(char user_input){
     for(index = 0; index < 5; index++){
         found = strchr(&user_input, operator_list[index]);
         if(found != NULL){
-            operator = *found;
+            operator = found;
+            printf("%s", &operator);
         }
     }
 
