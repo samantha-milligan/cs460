@@ -41,32 +41,40 @@ int main() {
         scanf("%c", &user_input);
 
         // Check if quit connection
-        char end_marker = 'quit';
-
-        if (user_input == end_marker) {
-            // Write quit message to server
-            write(client_socket, &end_marker, sizeof(char));
-
-            // Close connection
-            printf("\n\nConnection closed.\n\n");
-            close(client_socket);
-            exit(EXIT_SUCCESS);
-        }
+        check_closed_connection(user_input);
 
         // Separate integers and operators
         char *values = separate_operators(user_input);
         printf(&values);
 
-        // Send values to server
-        write(client_socket, &values, sizeof(char));
+        // Create packet
+        //packet = create_packet(values);
 
-        // Read and print server message
-        read(client_socket, &message, sizeof(char));
-        printf("Output: ")
-        printf("%c", message);
+        // // Send packet to server
+        // // TODO - determine size of packet
+        // write(client_socket, &packet, sizeof(int));
+
+        // // Read and store server message
+        // // TODO - unpack packet
+        // read(client_socket, &message, sizeof(char));
+
+        // // Print full message
+        // printf("Output: ")
+        // printf("%c", message);
     }
 
     return EXIT_SUCCESS;
+}
+
+// Checks for closed connection
+void check_closed_connection(char user_input){
+    char end_marker = 'quit';
+
+    if (user_input == end_marker) {
+            printf("\n\nConnection closed.\n\n");
+            close(client_socket);
+            exit(EXIT_SUCCESS);
+        }
 }
 
 // TODO - Separate operations for packet
@@ -110,3 +118,9 @@ char * separate_operators(char user_input){
 
     return value_list;
 }
+
+// // Creates UDP packet separating operators and integers
+// create_packet(char* values){
+//     // TODO - return type in function declaration
+//     // TODO - create packet structure
+// }
