@@ -24,7 +24,7 @@
  * function prototype declarations
  ************************************************************************/
 void *handle_client(void *pthreaded_client_socket);
-char * separate_operators(char user_input);
+char *separate_operators(char user_input);
 
 /************************************************************************
  * preprocessor directives
