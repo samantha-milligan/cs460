@@ -94,10 +94,12 @@ char *separate_operators(char user_input){
     char value_list[] = {};
     char integer1 = integer_list[0], integer2 = integer_list[1];
 
-    if(sqrt){
-        char *str_pointer = integer2;
+    if(*sqrt){
+        char *str_pointer = &integer2;
         str_pointer[strlen(str_pointer) - 1] = 0;
-        value_list[0],value_list[1]  = "sqrt()", integer2;
+        memcpy(value_list,"sqrt()", sizeof("sqrt()"));
+        value_list[1] = integer2;
+
     }
     else{
         value_list[0], value_list[1], value_list[2] = operator, integer1, integer2;
