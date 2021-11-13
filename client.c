@@ -73,7 +73,7 @@ char *separate_operators(char user_input){
     for(index = 0; index < 5; index++){
         found = strchr(&user_input, operator_list[index]);
         if(found != NULL){
-            operator = found;
+            operator = *found;
             printf("%s", &operator);
         }
     }
