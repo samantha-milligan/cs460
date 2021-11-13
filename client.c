@@ -21,14 +21,14 @@ int main() {
         exit(EXIT_FAILURE);
     }
     else{
-        printf("Client connected.");
+        printf("Client connected.\n\n");
 
     }
 
     // Display initial messages
-    printf("Computation Client");
-    printf("Type 'q' to close connection.");
-    printf("Use sqrt() for square root.");
+    printf("Computation Client\n");
+    printf("Type 'q' to close connection.\n");
+    printf("Use sqrt() for square root.\n\n");
 
     char user_input, message, values, end_marker = 'q';
     
@@ -45,17 +45,16 @@ int main() {
             write(client_socket, &end_marker, sizeof(char));
 
             // Close connection
-            printf("\n\nConnection closed.\n\n");
+            printf("\nConnection closed.\n\n");
             close(client_socket);
             exit(EXIT_SUCCESS);
         }
 
         // Separate integers and operators
-        // TODO - array or string?
         values = *separate_operators(user_input);
 
         // Send values to server
-        write(client_socket, &values, sizeof(char));
+        write(client_socket, &values, sizeof(values));
 
         // Read and print server message
         read(client_socket, &message, sizeof(char));
@@ -97,12 +96,12 @@ char *separate_operators(char user_input){
     char integer1 = integer_list[0], integer2 = integer_list[1];
 
     if(sqrt){
-        // TODO - Trim last character ')'
-        // integer1 = integer2[]
-        value_list = {"sqrt()", integer1};
+        char *str_pointer = integer2;
+        str_pointer[strlen(str_pointer) - 1] = 0;
+        value_list[0],value_list[1]  = "sqrt()", integer2;
     }
     else{
-        value_list = {operator, integer1, integer2};
+        value_list[0], value_list[1], value_list[2] = operator, integer1, integer2;
     }
 
     printf("%s", value_list);
