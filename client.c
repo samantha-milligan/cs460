@@ -53,7 +53,7 @@ int main() {
         values = *separate_operators(user_input);
 
         // Send values to server
-        write(client_socket, &user_input, sizeof(user_input));
+        write(client_socket, &values, sizeof(user_input));
 
         // Read and print server message
         read(client_socket, &message, sizeof(char));
