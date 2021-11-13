@@ -54,8 +54,8 @@ int main() {
         }
 
         // Separate integers and operators
+        // TODO - array or string?
         char *values = separate_operators(user_input);
-        printf(&values);
 
         // Send values to server
         write(client_socket, &values, sizeof(char));
