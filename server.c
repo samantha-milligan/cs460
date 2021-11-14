@@ -64,34 +64,51 @@
  ************************************************************************/
 
 void *handle_client(void *pthreaded_client_socket) {
-    //printf("\nclient socket: %i\n", client_socket);
     int* client_socket_ptr = (int*) pthreaded_client_socket;
     int client_socket = *((int*) pthreaded_client_socket);
 
-    char input;
+    char input[150];
     int keep_going = TRUE;
     int close_val = 0;
 
+    char *token;
+    char *operator;
+    char *input_1;
+    char *input_2;
+    char *output;
+
     while (keep_going) {
         // read char from client
-        switch (read(client_socket, &input, sizeof(char))) {
+        switch (read(client_socket, &input, sizeof(input))) {
             case 0:
                 keep_going = FALSE;
                 printf("\nEnd of stream, returning ...\n");
-                break;
             case -1:
                 perror("Error reading from network!\n");
                 keep_going = FALSE;
                 break;
         }
 
-        printf("%c", input);
+        printf("%s", input);
 
         // check if we terminate
-        if (input == 'q') {
+        if (input[0] == 'q') {
             keep_going = FALSE;
         }
+        else {
+          token = strtok(input, ",");
+          operator = token;
 
+          token = strtok(NULL, ",");
+          input_1 = token;
+
+          token = strtok(NULL, ",");
+          input_2 = token;
+
+          printf("operator: %s\n", operator);
+          printf("input 1: %s\n", input_1);
+          printf("input 2: %s\n", input_2);
+        }
 
         // send result back to client
         write(client_socket, &input, sizeof(char));
@@ -130,53 +147,53 @@ void comp_protocol(char *values[], char *response[]) {
       response[0] = "Negative Square Root";
       double_result = -9999.0;
     }
-   else{
-     double_result = sqrt(integer1);
-   }
+    else {
+      double_result = sqrt(integer1);
+    }
 
-   sprintf(result_str, "%f", double_result);
-   printf("Result: %f\n", double_result);
+    sprintf(result_str, "%f", double_result);
+    printf("Result: %f\n", double_result);
 
-   response[1] = result_str;
+    response[1] = result_str;
   }
   else {
-   integer2 = atoi(values[2]);
-   printf("%d %s %d\n", integer1, operator, integer2);
-   char single_operator = (char)*operator;
+    integer2 = atoi(values[2]);
+    printf("%d %s %d\n", integer1, operator, integer2);
+    char single_operator = (char)*operator;
 
-   switch(single_operator) {
-     case '+':
-      result = integer1 + integer2;
-      break;
-     case '-':
-      result = integer1 - integer2;
-      break;
-     case '*':
-      result = integer1 * integer2;
-      break;
-     case '/':
-      if(integer2 == 0){
-        response[0] = "Division by Zero";
-        double_result = -9999.0;
-      }
-      else{
-        double_result = (double)integer1 / integer2;
-      }
-      break;
-     case '^':
-      result = pow(integer1, integer2);
-      break;
-   }
+    switch(single_operator) {
+      case '+':
+        result = integer1 + integer2;
+        break;
+      case '-':
+        result = integer1 - integer2;
+        break;
+      case '*':
+        result = integer1 * integer2;
+        break;
+      case '/':
+        if(integer2 == 0) {
+          response[0] = "Division by Zero";
+          double_result = -9999.0;
+        }
+        else {
+          double_result = (double)integer1 / integer2;
+        }
+        break;
+      case '^':
+        result = pow(integer1, integer2);
+        break;
+    }
 
-   if(single_operator == '/') {
-     sprintf(result_str, "%f", double_result);
-     printf("Result: %f\n", double_result);
-   }
-   else{
-     sprintf(result_str, "%d", result);
-     printf("Result: %d\n", result);
-   }
+    if(single_operator == '/') {
+      sprintf(result_str, "%f", double_result);
+      printf("Result: %f\n", double_result);
+    }
+    else {
+      sprintf(result_str, "%d", result);
+      printf("Result: %d\n", result);
+    }
 
-   response[1] = result_str;
+    response[1] = result_str;
   }
 }
