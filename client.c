@@ -79,18 +79,19 @@ char separate_operators(char* input){
     }
 
     // Add operator to values
-    //char values[] = "";
-    //strcat(values, &operator);
+    char values[100];
+    strcpy(values, &operator);
+    strcat(values, ",");
 
-    // // Find integers
-    // index = 0;
-    // char *substring = strtok(input, &operator);
+    // Find integers
+    char *substring = strtok(input, &operator);
 
-    // while(substring != NULL){
-    //     substring = strtok(NULL, &operator);
-    //     strcat(values, substring);
-    //     strcat(values, ",");
-    // }
+    while(substring != NULL){
+        printf("%s", substring);
+        substring = strtok(NULL, &operator);
+        strcat(values, substring);
+        //strcat(values, ",");
+    }
 
     // // Assign values
     // char *sqrt = strstr(&input, "sqrt");
