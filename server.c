@@ -89,7 +89,7 @@ void *handle_client(void *pthreaded_client_socket) {
                 break;
         }
 
-        printf("%s", input);
+        printf("%s\n", input);
 
         // check if we terminate
         if (input[0] == 'q') {

@@ -31,7 +31,7 @@ int main() {
     printf("Use sqrt() for square root.\n\n");
 
     char user_input[100], message, end_marker[] = "quit";
-    char* values;
+    char values[100];
 
     // While connected, read message
     while (TRUE) {
@@ -51,7 +51,9 @@ int main() {
         }
 
         // Separate integers and operators
-        values = separate_operators(user_input);
+        //values = separate_operators(user_input);
+        separate_operators(user_input, values);
+
 
         // Send values to server
         write(client_socket, &values, sizeof(values));
@@ -66,7 +68,7 @@ int main() {
 }
 
 // TODO - Separate operations for packet
-char* separate_operators(char* input){
+char* separate_operators(char* input, char values[]){
     // Find operator
     int index = 0;
     char operator_list[] = {'+', '-', '/', '^', '(', '*'};
@@ -83,7 +85,7 @@ char* separate_operators(char* input){
     }
 
     // Add operator to values
-    char values[100];
+    //char values[100];
     strcpy(values, "");
     char *sqrt = strstr(input, "sqrt");
 
