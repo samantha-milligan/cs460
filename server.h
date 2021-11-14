@@ -26,7 +26,7 @@
  * function prototype declarations
  ************************************************************************/
 void *handle_client(void *pthreaded_client_socket);
-char *separate_operators(char user_input);
+char separate_operators(char* input);
 void comp_protocol(char *values[], char *response[]);
 
 /************************************************************************

@@ -27,19 +27,19 @@ int main() {
 
     // Display initial messages
     printf("Computation Client\n");
-    printf("Type 'q' to close connection.\n");
+    printf("Type 'quit' to close connection.\n");
     printf("Use sqrt() for square root.\n\n");
 
-    char user_input, message, values, end_marker = 'q';
+    char user_input[100], message, values, end_marker[] = "quit";
     
     // While connected, read message
     while (TRUE) {
         // Ask user for operation
         printf("Input: ");
-        scanf("%c", &user_input);
-
+        scanf("%s", user_input);     
+        
         // Check if quit connection
-        if (user_input == end_marker) {
+        if (strcmp(user_input, end_marker) == 0) {
             // Write quit message to server
             write(client_socket, &end_marker, sizeof(char));
 
@@ -50,61 +50,58 @@ int main() {
         }
 
         // Separate integers and operators
-        values = *separate_operators(user_input);
+        values = separate_operators(user_input);
 
         // Send values to server
-        write(client_socket, &values, sizeof(user_input));
+        //write(client_socket, &values, sizeof(values));
 
         // Read and print server message
-        read(client_socket, &message, sizeof(char));
-        printf("Output: %c", message);
+        //read(client_socket, &message, sizeof(char));
+        printf("Output: \n");
+        //printf("%c", message);
     }
 
     return EXIT_SUCCESS;
 }
 
 // TODO - Separate operations for packet
-char *separate_operators(char user_input){
+char separate_operators(char* input){
     // Find operator
     int index = 0;
     char operator_list[] = {'+', '-', '/', '^', '('};
     char *found, operator;
     
     for(index = 0; index < 5; index++){
-        found = strchr(&user_input, operator_list[index]);
+        found = strchr(input, operator_list[index]);
         if(found != NULL){
             operator = *found;
-            printf("%s", &operator);
         }
     }
 
-    // Find integers
-    char integer_list[] = {};
-    index = 0;
-    char *substring = strtok(&user_input, &operator);
+    // Add operator to values
+    //char values[] = "";
+    //strcat(values, &operator);
 
-    while(substring != NULL){
-        substring = strtok(NULL, &operator);
-        integer_list[index] = *substring;
-        index++;
-    }
+    // // Find integers
+    // index = 0;
+    // char *substring = strtok(input, &operator);
 
-    // Assign values
-    char *sqrt = strstr(&user_input, "sqrt");
-    char value_list[] = {};
-    char integer1 = integer_list[0], integer2 = integer_list[1];
+    // while(substring != NULL){
+    //     substring = strtok(NULL, &operator);
+    //     strcat(values, substring);
+    //     strcat(values, ",");
+    // }
 
-    if(*sqrt){
-        char *str_pointer = &integer2;
-        str_pointer[strlen(str_pointer) - 1] = 0;
-        memcpy(value_list,"sqrt()", sizeof("sqrt()"));
-        value_list[1] = integer2;
+    // // Assign values
+    // char *sqrt = strstr(&input, "sqrt");
 
-    }
-    else{
-        value_list[0], value_list[1], value_list[2] = operator, integer1, integer2;
-    }
+    // if(*sqrt){
+    //     // change values string, remove last character
+    //     char *str_pointer = &integer2;
+    //     str_pointer[strlen(str_pointer) - 1] = 0;
+    //     values = strcat(operator, integer2);
+    // }
 
-    printf("%s", value_list);
-    return value_list;
+    // return values;
+    return "";
 }
