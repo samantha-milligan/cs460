@@ -57,7 +57,7 @@ int main() {
         write(client_socket, &values, sizeof(values));
 
         // Read and print server message
-        read(client_socket, &message, sizeof(char));
+        read(client_socket, &message, sizeof(message));
         printf("Output: ");
         printf("%c\n", message);
     }
