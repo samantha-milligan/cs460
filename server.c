@@ -147,6 +147,8 @@ void comp_protocol(char *values[], char *response[]) {
 
    sprintf(result_str, "%f", double_result);
    printf("Result: %f\n", double_result);
+
+   response[1] = result_str;
   }
   else {
    integer2 = atoi(values[2]);
