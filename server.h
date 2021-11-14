@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 // socket/bind/listen/accept
 #include <arpa/inet.h>
@@ -26,6 +27,7 @@
  ************************************************************************/
 void *handle_client(void *pthreaded_client_socket);
 char *separate_operators(char user_input);
+void comp_protocol(char *values[], char *response[]);
 
 /************************************************************************
  * preprocessor directives
