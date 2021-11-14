@@ -72,6 +72,8 @@ char* separate_operators(char* input){
     char operator_list[] = {'+', '-', '/', '^', '(', '*'};
     char *found, operator;
 
+
+
     for(index = 0; index < 6; index++){
         found = strchr(input, operator_list[index]);
         if(found != NULL){
@@ -81,6 +83,7 @@ char* separate_operators(char* input){
 
     // Add operator to values
     char values[100];
+    strcpy(values, "");
     char *sqrt = strstr(input, "sqrt");
 
     if(!sqrt){
