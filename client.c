@@ -32,13 +32,13 @@ int main() {
 
     char user_input[100], message, end_marker[] = "quit";
     char* values;
-    
+
     // While connected, read message
     while (TRUE) {
         // Ask user for operation
         printf("Input: ");
-        scanf("%s", user_input);     
-        
+        scanf("%s", user_input);
+
         // Check if quit connection
         if (strcmp(user_input, end_marker) == 0) {
             // Write quit message to server
@@ -69,10 +69,10 @@ int main() {
 char* separate_operators(char* input){
     // Find operator
     int index = 0;
-    char operator_list[] = {'+', '-', '/', '^', '('};
+    char operator_list[] = {'+', '-', '/', '^', '(', '*'};
     char *found, operator;
-    
-    for(index = 0; index < 5; index++){
+
+    for(index = 0; index < 6; index++){
         found = strchr(input, operator_list[index]);
         if(found != NULL){
             operator = *found;
