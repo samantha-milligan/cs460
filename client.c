@@ -30,7 +30,8 @@ int main() {
     printf("Type 'quit' to close connection.\n");
     printf("Use sqrt() for square root.\n\n");
 
-    char user_input[100], message, values, end_marker[] = "quit";
+    char user_input[100], message, end_marker[] = "quit";
+    char* values;
     
     // While connected, read message
     while (TRUE) {
@@ -53,19 +54,19 @@ int main() {
         values = separate_operators(user_input);
 
         // Send values to server
-        //write(client_socket, &values, sizeof(values));
+        write(client_socket, &values, sizeof(values));
 
         // Read and print server message
-        //read(client_socket, &message, sizeof(char));
-        printf("Output: \n");
-        //printf("%c", message);
+        read(client_socket, &message, sizeof(char));
+        printf("Output: ");
+        printf("%c\n", message);
     }
 
     return EXIT_SUCCESS;
 }
 
 // TODO - Separate operations for packet
-char separate_operators(char* input){
+char* separate_operators(char* input){
     // Find operator
     int index = 0;
     char operator_list[] = {'+', '-', '/', '^', '('};
@@ -80,29 +81,21 @@ char separate_operators(char* input){
 
     // Add operator to values
     char values[100];
-    strcpy(values, &operator);
-    strcat(values, ",");
+    char *sqrt = strstr(input, "sqrt");
+
+    if(!sqrt){
+        strcpy(values, &operator);
+        strcat(values, ",");
+    }
 
     // Find integers
     char *substring = strtok(input, &operator);
+    strcat(values, substring);
+    strcat(values, ",");
+    substring = strtok(NULL, &operator);
+    strcat(values, substring);
 
-    while(substring != NULL){
-        printf("%s", substring);
-        substring = strtok(NULL, &operator);
-        strcat(values, substring);
-        //strcat(values, ",");
-    }
+    printf("%s\n", values);
 
-    // // Assign values
-    // char *sqrt = strstr(&input, "sqrt");
-
-    // if(*sqrt){
-    //     // change values string, remove last character
-    //     char *str_pointer = &integer2;
-    //     str_pointer[strlen(str_pointer) - 1] = 0;
-    //     values = strcat(operator, integer2);
-    // }
-
-    // return values;
-    return "";
+    return values;
 }
