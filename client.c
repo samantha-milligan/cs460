@@ -70,6 +70,7 @@ char* separate_operators(char* input){
     // Find operator
     int index = 0;
     char operator_list[] = {'+', '-', '/', '^', '(', '*'};
+    char remove_op = ')';
     char *found, operator;
 
 
@@ -96,6 +97,12 @@ char* separate_operators(char* input){
     strcat(values, substring);
     strcat(values, ",");
     substring = strtok(NULL, &operator);
+
+    char *second_par = strstr(substring, ")");
+    if(second_par) {
+      substring = strtok(substring, &remove_op);
+    }
+
     strcat(values, substring);
 
     printf("%s\n", values);
