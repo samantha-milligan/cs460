@@ -130,7 +130,7 @@ void *handle_client(void *pthreaded_client_socket) {
               // add "%s", response[1] to final response string
 
           // send final_result back to client
-          write(client_socket, &input, sizeof(char));
+          write(client_socket, &final_response, sizeof(final_response));
 
         }
 
