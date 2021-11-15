@@ -108,10 +108,33 @@ void *handle_client(void *pthreaded_client_socket) {
           printf("operator: %s\n", operator);
           printf("input 1: %s\n", input_1);
           printf("input 2: %s\n", input_2);
+
+          char *values_list[3] = {operator, input_1, input_2};
+
+          char *response[2] = {"", ""};
+
+          comp_protocol(values_list, response);
+
+          printf("Result:\n");
+          for(int i=0; i < 2; i++) {
+            printf("%s\n", response[i]);
+          }
+
+          // Create a string that's like the Final_Response
+          char *final_response = "";
+
+          // TO DO: Check if the computation returned an OK or error message
+            // If it was an error
+              // add "Error: %s", response[0] to final response string
+            // If it was not an error
+              // add "%s", response[1] to final response string
+
+          // send final_result back to client
+          write(client_socket, &input, sizeof(char));
+
         }
 
-        // send result back to client
-        write(client_socket, &input, sizeof(char));
+
 
     }
 
@@ -127,7 +150,6 @@ void *handle_client(void *pthreaded_client_socket) {
         printf("\nClosed socket to client, exit\n");
     }
 }
-
 
 void comp_protocol(char *values[], char *response[]) {
   char *sqrt_detect = strstr(values[0], "sqrt");
