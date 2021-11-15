@@ -65,7 +65,7 @@ int main() {
     return EXIT_SUCCESS;
 }
 
-// Separate operations for packet
+// Separate operations for server
 char* separate_operators(char* input, char values[]){
     // Find operator
     int index = 0;
