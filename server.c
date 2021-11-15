@@ -120,17 +120,18 @@ void *handle_client(void *pthreaded_client_socket) {
             printf("%s\n", response[i]);
           }
 
-          // Create a string that's like the Final_Response
-          char *final_response = "";
+          char *error_str = strstr(response[0], "Error");
+          char message[9999];
 
-          // TO DO: Check if the computation returned an OK or error message
-            // If it was an error
-              // add "Error: %s", response[0] to final response string
-            // If it was not an error
-              // add "%s", response[1] to final response string
 
-          // send final_result back to client
-          write(client_socket, &final_response, sizeof(final_response));
+          if(error_str){
+            strcpy(message, response[0]);
+            write(client_socket, message, sizeof(message));
+          }
+          else {
+            strcpy(message, response[1]);
+            write(client_socket, message, sizeof(message));
+          }
 
         }
 
@@ -166,7 +167,7 @@ void comp_protocol(char *values[], char *response[]) {
     printf("sqrt(%d)\n", integer1);
 
     if(integer1 < 0) {
-      response[0] = "Negative Square Root";
+      response[0] = "Error: Negative Square Root";
       double_result = -9999.0;
     }
     else {
@@ -195,7 +196,7 @@ void comp_protocol(char *values[], char *response[]) {
         break;
       case '/':
         if(integer2 == 0) {
-          response[0] = "Division by Zero";
+          response[0] = "Error: Division by Zero";
           double_result = -9999.0;
         }
         else {

@@ -30,7 +30,7 @@ int main() {
     printf("Type 'quit' to close connection.\n");
     printf("Use sqrt() for square root.\n\n");
 
-    char user_input[100], message, end_marker[] = "quit";
+    char user_input[100], message[9999], end_marker[] = "quit";
     char values[100];
 
     // While connected, read message
@@ -59,7 +59,7 @@ int main() {
         // Read and print server message
         read(client_socket, &message, sizeof(message));
         printf("Output: ");
-        printf("%c\n", message);
+        printf("%s\n", message);
     }
 
     return EXIT_SUCCESS;
@@ -79,7 +79,7 @@ char* separate_operators(char* input, char values[]){
             operator = *found;
         }
     }
-    
+
     // Return error message
     // int length = strlen(input), found_operator, repeat = 0;
     // index = 0;
@@ -91,7 +91,7 @@ char* separate_operators(char* input, char values[]){
     //         printf("%d", repeat);
     //     }
 
-    //     if(!operator && repeat != 1 && (atoi(&input[index]) == 0 
+    //     if(!operator && repeat != 1 && (atoi(&input[index]) == 0
     //         || found_operator != 0)){
     //         printf("Error: Use mathematical operations.\n");
     //         return "Error";
