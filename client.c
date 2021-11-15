@@ -1,6 +1,6 @@
 #include "server.h"
 
-
+// Sends mathematical problem to server, returns answer
 int main() {
     // Create socket
     int client_socket;
@@ -51,9 +51,7 @@ int main() {
         }
 
         // Separate integers and operators
-        //values = separate_operators(user_input);
         separate_operators(user_input, values);
-
 
         // Send values to server
         write(client_socket, &values, sizeof(values));
@@ -67,15 +65,13 @@ int main() {
     return EXIT_SUCCESS;
 }
 
-// TODO - Separate operations for packet
+// Separate operations for packet
 char* separate_operators(char* input, char values[]){
     // Find operator
     int index = 0;
-    char operator_list[] = {'+', '-', '/', '^', '(', '*'};
+    char operator_list[] = {'+', '-', '*', '/', '^', '('};
     char remove_op = ')';
     char *found, operator;
-
-
 
     for(index = 0; index < 6; index++){
         found = strchr(input, operator_list[index]);
@@ -83,12 +79,28 @@ char* separate_operators(char* input, char values[]){
             operator = *found;
         }
     }
+    
+    // Return error message
+    // int length = strlen(input), found_operator, repeat = 0;
+    // index = 0;
+
+    // for(index = 0; index < length; index++){
+    //     found_operator = strcmp(input[index], operator);
+    //     if(found_operator == 0){
+    //         repeat++;
+    //         printf("%d", repeat);
+    //     }
+
+    //     if(!operator && repeat != 1 && (atoi(&input[index]) == 0 
+    //         || found_operator != 0)){
+    //         printf("Error: Use mathematical operations.\n");
+    //         return "Error";
+    //     }
+    // }
 
     // Add operator to values
-    //char values[100];
     strcpy(values, "");
     char *sqrt = strstr(input, "sqrt");
-
     if(!sqrt){
         strcpy(values, &operator);
         strcat(values, ",");
@@ -100,14 +112,12 @@ char* separate_operators(char* input, char values[]){
     strcat(values, ",");
     substring = strtok(NULL, &operator);
 
+    // Remove last character for sqrt()
     char *second_par = strstr(substring, ")");
-    if(second_par) {
+    if(second_par){
       substring = strtok(substring, &remove_op);
     }
-
     strcat(values, substring);
-
-    printf("%s\n", values);
 
     return values;
 }
