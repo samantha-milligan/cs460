@@ -209,11 +209,11 @@ void comp_protocol(char *values[], char *response[]) {
 
     if(single_operator == '/') {
       sprintf(result_str, "%f", double_result);
-      printf("Result: %f\n", double_result);
+      //printf("Result: %f\n", double_result);
     }
     else {
       sprintf(result_str, "%d", result);
-      printf("Result: %d\n", result);
+      //printf("Result: %d\n", result);
     }
 
     response[1] = result_str;
