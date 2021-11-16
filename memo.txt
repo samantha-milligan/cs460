@@ -1,30 +1,20 @@
 Memo
 
-1.	This protocol designates how a client may send algebraic operations,
-  later defined, to a server which in turn will send the result of these
-  operations.
+1. How do you communicate the different operations?
+    Addition: '+'
+    Subtraction: '-'
+    Multiplication: '*'
+    Division: '/'
+    Power: '^'
+    Square Root: 'sqrt()'
+    
+2. How do you represent numbers, how are they dilimited, and how are they separated from the operations/operators?
+    Numbers are represented by the values before and after the operators ('+', '-', '*', '/', '^', 'sqrt()'). The client sends a request in this form of a string: "operator,integer1,integer2". These are separated using string parsing.
 
-2. The packet structure is in the form of:
-          - Operator
-          - Input 1
-          - Input 2
+3. How do you communicate exceptional situations?
+    Error messages are displayed for negative square roots and zero division.
+    Negative Square Root: "Error: Negative Square Root"
+    Divide by 0: "Error: Division by Zero"
 
-3. The sections of the packet are separated by the comma, ',', character. Input
-  1 and Input 2 are both character strings representing their numerical values.
-
-4.
-
-5. Exceptional Situations List:
-      * “Client Message Not Acceptable”: If the client message is not an
-          acceptable algebraic expression or a shutdown command
-      * "Divide by Zero":  If the client message's algebraic operation attempts
-          to divide by 0
-      * "Negative Square Root": If the client message's algebraic
-          operation attempts to compute the square root of a negative number
-
-6. Exceptional Situations Process:
-      * The operator section is one of the error messages from the "Exceptional
-            Situations List" and input 1 is -9999.
-
-7. To shut down a connection between the client and the server, the character
-      'q' is sent in the operator section. and the server closes the connection.
+4. How do you communicate shutting down a session of a client with the server?
+    The user enters 'quit' to shut down a connection.
