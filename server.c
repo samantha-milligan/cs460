@@ -105,9 +105,17 @@ void *handle_client(void *pthreaded_client_socket) {
           token = strtok(NULL, ",");
           input_2 = token;
 
-          printf("operator: %s\n", operator);
-          printf("input 1: %s\n", input_1);
-          printf("input 2: %s\n", input_2);
+          char *sqrt_detect = strstr(operator, "sqrt");
+
+          if(sqrt_detect){
+            printf("Request: %s(%s)\n", operator, input_1);
+            printf("Input: %s of %s\n", operator, input_1);
+          } else {
+            printf("Request: %s%s%s\n", operator, input_1, input_2);
+            printf("Input: %s%s%s\n", input_1, operator, input_2);
+          }
+
+
 
           char *values_list[3] = {operator, input_1, input_2};
 
@@ -115,23 +123,22 @@ void *handle_client(void *pthreaded_client_socket) {
 
           comp_protocol(values_list, response);
 
-          printf("Result:\n");
-          for(int i=0; i < 2; i++) {
-            printf("%s\n", response[i]);
-          }
-
           char *error_str = strstr(response[0], "Error");
           char message[9999];
 
 
           if(error_str){
             strcpy(message, response[0]);
+            printf("Output: %s\n", message);
             write(client_socket, message, sizeof(message));
           }
           else {
             strcpy(message, response[1]);
+            printf("Output: %s\n", message);
             write(client_socket, message, sizeof(message));
           }
+
+          printf("\n\n");
 
         }
 
@@ -164,8 +171,6 @@ void comp_protocol(char *values[], char *response[]) {
   response[0] = "OK";
 
   if(sqrt_detect) {
-    printf("sqrt(%d)\n", integer1);
-
     if(integer1 < 0) {
       response[0] = "Error: Negative Square Root";
       double_result = -9999.0;
@@ -175,13 +180,11 @@ void comp_protocol(char *values[], char *response[]) {
     }
 
     sprintf(result_str, "%f", double_result);
-    printf("Result: %f\n", double_result);
 
     response[1] = result_str;
   }
   else {
     integer2 = atoi(values[2]);
-    printf("%d %s %d\n", integer1, operator, integer2);
     char single_operator = (char)*operator;
 
     switch(single_operator) {
