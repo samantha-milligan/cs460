@@ -70,7 +70,6 @@ char* separate_operators(char* input, char values[]){
     // Find operator
     int index = 0;
     char operator_list[] = {'+', '-', '*', '/', '^', '('};
-    char remove_op = ')';
     char *found, operator;
 
     for(index = 0; index < 6; index++){
@@ -111,13 +110,14 @@ char* separate_operators(char* input, char values[]){
     strcat(values, substring);
     strcat(values, ",");
     substring = strtok(NULL, &operator);
-
-    // Remove last character for sqrt()
-    char *second_par = strstr(substring, ")");
-    if(second_par){
-      substring = strtok(substring, &remove_op);
-    }
     strcat(values, substring);
 
+    // Remove last character for sqrt()
+    char *remove_op = ")";
+    char *second_par = strstr(substring, remove_op);
+    if(second_par){
+        strtok(values, remove_op);
+    }
+    
     return values;
 }
