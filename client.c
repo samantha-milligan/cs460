@@ -79,24 +79,6 @@ char* separate_operators(char* input, char values[]){
         }
     }
 
-    // Return error message
-    // int length = strlen(input), found_operator, repeat = 0;
-    // index = 0;
-
-    // for(index = 0; index < length; index++){
-    //     found_operator = strcmp(input[index], operator);
-    //     if(found_operator == 0){
-    //         repeat++;
-    //         printf("%d", repeat);
-    //     }
-
-    //     if(!operator && repeat != 1 && (atoi(&input[index]) == 0
-    //         || found_operator != 0)){
-    //         printf("Error: Use mathematical operations.\n");
-    //         return "Error";
-    //     }
-    // }
-
     // Add operator to values
     strcpy(values, "");
     char *sqrt = strstr(input, "sqrt");
