@@ -89,8 +89,6 @@ void *handle_client(void *pthreaded_client_socket) {
                 break;
         }
 
-        printf("%s\n", input);
-
         // check if we terminate
         if (input[0] == 'q') {
             keep_going = FALSE;
@@ -108,14 +106,10 @@ void *handle_client(void *pthreaded_client_socket) {
           char *sqrt_detect = strstr(operator, "sqrt");
 
           if(sqrt_detect){
-            printf("Request: %s(%s)\n", operator, input_1);
-            printf("Input: %s of %s\n", operator, input_1);
+            printf("Input: %s(%s)\n", operator, input_1);
           } else {
-            printf("Request: %s%s%s\n", operator, input_1, input_2);
             printf("Input: %s%s%s\n", input_1, operator, input_2);
           }
-
-
 
           char *values_list[3] = {operator, input_1, input_2};
 
@@ -138,8 +132,6 @@ void *handle_client(void *pthreaded_client_socket) {
             write(client_socket, message, sizeof(message));
           }
 
-          printf("\n\n");
-
         }
 
 
@@ -147,10 +139,8 @@ void *handle_client(void *pthreaded_client_socket) {
     }
 
     // cleanup
-
     close_val = close(client_socket);
-    *client_socket_ptr = 0;           // change client_socket array in main
-
+    *client_socket_ptr = 0;  
     if (close_val == -1) {
         perror("Error closing socket\n");
         exit(EXIT_FAILURE);
@@ -213,11 +203,9 @@ void comp_protocol(char *values[], char *response[]) {
 
     if(single_operator == '/') {
       sprintf(result_str, "%f", double_result);
-      //printf("Result: %f\n", double_result);
     }
     else {
       sprintf(result_str, "%d", result);
-      //printf("Result: %d\n", result);
     }
 
     response[1] = result_str;
