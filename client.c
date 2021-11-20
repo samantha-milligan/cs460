@@ -2,51 +2,55 @@
 
 // Sends mathematical problem to server, returns answer
 int main() {
-    // Create socket
-    int client_socket;
-    client_socket = socket(AF_INET, SOCK_STREAM, 0);
+    int socket_fd;
+    struct sockaddr_in server_addr;
+    socklen_t server_addr_length = sizeof(server_addr);
+    ssize_t bytes_received;
+    char receive_buffer[MAX_LENGTH_DATA];
+    char *client_message;
 
-    // Define socket address
-    struct sockaddr_in client_address;
-    client_address.sin_family = AF_INET;
-    client_address.sin_addr.s_addr = inet_addr(SERVER_ADDR);
-    client_address.sin_port = htons(PORT);
-
-    // Connect to daytime server
-    printf("\nWaiting for connection...\n\n");
-
-    // If no connection, return fail
-    if (connect(client_socket, (struct sockaddr *)&client_address, sizeof(client_address)) == -1) {
-        perror("Connection failed.\n");
+    // Creating client datagram socket
+    if ((socket_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    {
+        perror("Socket creation failed.\n");
         exit(EXIT_FAILURE);
     }
-    else{
-        printf("Client connected.\n\n");
-
-    }
+    printf("Socket created.\n\n");
+    
+    // Prepare server adddress structure
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_ADDR);
+    server_addr.sin_port = htons(PORT);
 
     // Display initial messages
     printf("Computation Client\n");
-    printf("Type 'quit' to close connection.\n");
+    printf("Type 'quit' to close socket.\n");
     printf("Use sqrt() for square root.\n\n");
-
     char user_input[100], message[9999], end_marker[] = "quit";
     char values[100];
 
-    // While connected, read message
+    // While socket is connected, read message
     while (TRUE) {
         // Ask user for operation
         printf("Input: ");
         scanf("%s", user_input);
 
-        // Check if quit connection
+        // Check if close socket
         if (strcmp(user_input, end_marker) == 0) {
             // Write quit message to server
-            write(client_socket, &end_marker, sizeof(char));
+            sendto(
+                socket_fd,
+                (const char *)end_marker,
+                strlen(end_marker) + 1,
+                0,
+                (struct sockaddr *) &server_addr,
+                sizeof(server_addr)
+            );
 
-            // Close connection
-            printf("\nConnection closed.\n\n");
-            close(client_socket);
+            // Close socket
+            close(socket_fd);
+            printf("\nSocket closed.\n\n");
             exit(EXIT_SUCCESS);
         }
 
@@ -54,12 +58,29 @@ int main() {
         separate_operators(user_input, values);
 
         // Send values to server
-        write(client_socket, &values, sizeof(values));
+        sendto(
+            socket_fd,
+            (const char *)values,
+            strlen(values) + 1,
+            0,
+            (struct sockaddr *) &server_addr,
+            sizeof(server_addr)
+        );
 
-        // Read and print server message
-        read(client_socket, &message, sizeof(message));
-        printf("Output: ");
-        printf("%s\n", message);
+        // Receive message back from server
+        bytes_received = recvfrom(
+            socket_fd,
+            (void *)receive_buffer,
+            (size_t) MAX_LENGTH_DATA,
+            MSG_WAITALL,
+            (struct sockaddr *) &server_addr,
+            &server_addr_length
+        );
+
+        // Terminate string received
+        receive_buffer[bytes_received] = '\0';
+        
+        printf("Output: %s\n", receive_buffer);
     }
 
     return EXIT_SUCCESS;

@@ -34,11 +34,9 @@ void comp_protocol(char *values[], char *response[]);
  ************************************************************************/
 #define SERVER_ADDR "127.0.0.1" // loopback ip address
 #define PORT 23657              // port the server will listen on
+#define MAX_LENGTH_DATA 1024
 
-// I cannot let go of the old-fashioned way :) - for readability ...
 #define FALSE false
 #define TRUE !false
-
-// number of pending connections in the connection queue
-#define NUM_CONNECTIONS 1
-#define MAX_NUM_CONT_CLIENTS 2
+#define udp_server_h
+#define udp_client_h
