@@ -4,56 +4,58 @@
  * MAIN
  ************************************************************************/
 
- // Initialize mutex
- int pthread_mutex_init(pthread_mutex_t *restrict mutex, const pthread_mutexattr_t *restrict attr);
-
  int main(int argc, char** argv) {
-     int server_socket;                          // descriptor of server socket
-     struct sockaddr_in server_address;          // for naming the server's listening socket
-     int client_socket;                          // number of clients we can accept
+     int                socket_fd;                                // descriptor of server socket
+     struct sockaddr_in server_addr;                              // for naming the server's listening socket
+     struct sockaddr    client_addr;
+     socklen_t          client_addr_length = sizeof(client_addr); // number of clients we can accept
 
-     pthread_t pthread_id[MAX_NUM_CONT_CLIENTS];
+     ssize_t            bytes_received;
 
-     // sent when, client disconnected
-     signal(SIGPIPE, SIG_IGN);
+     char               receive_buffer[MAX_LENGTH_DATA];
+     char               *server_msg = "10";
 
-     // create unnamed network socket for server to listen on
-     if ((server_socket = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-         perror("Error creating socket");
+     // creating datagram socket file descriptor
+     if ((socket_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+     {
+         perror("Socket creation failed");
          exit(EXIT_FAILURE);
      }
 
      // name the socket (making sure the correct network byte ordering is observed)
-     server_address.sin_family      = AF_INET;           // accept IP addresses
-     server_address.sin_addr.s_addr = htonl(INADDR_ANY); // accept clients on any interface
-     server_address.sin_port        = htons(PORT);       // port to listen on
+     memset(&server_addr, 0, sizeof(server_addr));
+     server_addr.sin_family      = AF_INET;           // accept IP addresses
+     server_addr.sin_addr.s_addr = htonl(INADDR_ANY); // accept clients on any interface
+     server_addr.sin_port        = htons(PORT);       // port to listen on
 
      // binding unnamed socket to a particular port
-     if (bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1) {
+     if (bind(socket_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
          perror("Error binding socket");
-         exit(EXIT_FAILURE);
-     }
-     //
-
-     // listen for client connections (pending connections get put into a queue)
-     if (listen(server_socket, NUM_CONNECTIONS) == -1) {
-         perror("Error listening on socket");
          exit(EXIT_FAILURE);
      }
 
      // server loop
      while (TRUE) {
-         // Lock mutex
-         int pthread_mutex_lock(pthread_mutex_t *mutex);
-
-         // accept connection to client and send handling to pthread
-         if ((client_socket = accept(server_socket, NULL, NULL)) == -1) {
-             perror("Error accepting client");
+         // receive message from *any* client
+         // data of up to MAX_LENGTH_DATA will be put into buffer
+         // client_addr will be filled in with addr info of where the data was received from
+         if ((bytes_received = recvfrom(socket_fd,
+                                   (void *)receive_buffer,
+                                   (size_t) MAX_LENGTH_DATA,
+                                   MSG_WAITALL,
+                                   (struct sockaddr *) &client_addr,
+                                   &client_addr_length
+                                   )) == -1)
+         {
+             perror("recvfrom failed");
          } else {
 
-             pthread_create(&pthread_id, NULL, handle_client, (void*)&client_socket);
+           // terminate string
+           receive_buffer[bytes_received] = '\0';
 
-             pthread_detach(pthread_id);
+           printf("Client : %s\n", receive_buffer);
+
+           handle_client(receive_buffer, socket_fd, client_addr, client_addr_length);
          }
      }
  }
@@ -63,13 +65,8 @@
  * handle client
  ************************************************************************/
 
-void *handle_client(void *pthreaded_client_socket) {
-    int* client_socket_ptr = (int*) pthreaded_client_socket;
-    int client_socket = *((int*) pthreaded_client_socket);
-
-    char input[150];
-    int keep_going = TRUE;
-    int close_val = 0;
+void *handle_client(char *receive_buffer, int socket_fd,
+                    struct sockaddr client_addr, socklen_t client_addr_length) {
 
     char *token;
     char *operator;
@@ -77,75 +74,53 @@ void *handle_client(void *pthreaded_client_socket) {
     char *input_2;
     char *output;
 
-    while (keep_going) {
-        // read char from client
-        switch (read(client_socket, &input, sizeof(input))) {
-            case 0:
-                keep_going = FALSE;
-                printf("\nEnd of stream, returning ...\n");
-            case -1:
-                perror("Error reading from network!\n");
-                keep_going = FALSE;
-                break;
-        }
 
-        // check if we terminate
-        if (input[0] == 'q') {
-            keep_going = FALSE;
-        }
-        else {
-          token = strtok(input, ",");
-          operator = token;
+    token = strtok(receive_buffer, ",");
+    operator = token;
 
-          token = strtok(NULL, ",");
-          input_1 = token;
+    token = strtok(NULL, ",");
+    input_1 = token;
 
-          token = strtok(NULL, ",");
-          input_2 = token;
+    token = strtok(NULL, ",");
+    input_2 = token;
 
-          char *sqrt_detect = strstr(operator, "sqrt");
+    char *sqrt_detect = strstr(operator, "sqrt");
 
-          if(sqrt_detect){
-            printf("Input: %s(%s)\n", operator, input_1);
-          } else {
-            printf("Input: %s%s%s\n", input_1, operator, input_2);
-          }
-
-          char *values_list[3] = {operator, input_1, input_2};
-
-          char *response[2] = {"", ""};
-
-          comp_protocol(values_list, response);
-
-          char *error_str = strstr(response[0], "Error");
-          char message[9999];
-
-
-          if(error_str){
-            strcpy(message, response[0]);
-            printf("Output: %s\n", message);
-            write(client_socket, message, sizeof(message));
-          }
-          else {
-            strcpy(message, response[1]);
-            printf("Output: %s\n", message);
-            write(client_socket, message, sizeof(message));
-          }
-
-        }
-
-
-
+    if(sqrt_detect){
+      printf("Input: %s(%s)\n", operator, input_1);
+    } else {
+      printf("Input: %s%s%s\n", input_1, operator, input_2);
     }
 
-    // cleanup
-    close_val = close(client_socket);
-    *client_socket_ptr = 0;  
-    if (close_val == -1) {
-        perror("Error closing socket\n");
-        exit(EXIT_FAILURE);
+    char *values_list[3] = {operator, input_1, input_2};
+
+    char *response[2] = {"", ""};
+
+    comp_protocol(values_list, response);
+
+    char *error_str = strstr(response[0], "Error");
+    char message[9999];
+
+    if(error_str){
+      strcpy(message, response[0]);
+    }
+    else {
+      strcpy(message, response[1]);
+    }
+
+    // send message back to client
+    // data is contained in data
+    // the client addr info is in client_addr, which was filled in in recvfrom() call before
+    if(sendto(socket_fd,
+           (const char *)message,
+           strlen(message) + 1, // account for ASCII?
+           0,
+           (struct sockaddr *) &client_addr,
+           client_addr_length) == -1)
+    {
+        perror("sendto");
     } else {
-        printf("\nClosed socket to client, exit\n");
+        printf("Output: %s\n", message);
     }
 }
 

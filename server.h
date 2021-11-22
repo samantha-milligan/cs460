@@ -25,7 +25,8 @@
 /************************************************************************
  * function prototype declarations
  ************************************************************************/
-void *handle_client(void *pthreaded_client_socket);
+void *handle_client(char *receive_buffer, int socket_fd,
+                    struct sockaddr client_addr, socklen_t client_addr_length);
 char* separate_operators(char* input, char values[]);
 void comp_protocol(char *values[], char *response[]);
 
@@ -38,5 +39,6 @@ void comp_protocol(char *values[], char *response[]);
 
 #define FALSE false
 #define TRUE !false
+
 #define udp_server_h
 #define udp_client_h

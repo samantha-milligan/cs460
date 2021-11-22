@@ -4,4 +4,4 @@ client: server.h client.c
 	$(CC) -o client client.c
 
 server: server.h server.c
-	$(CC) -o server server.c -lpthread -lm
+	$(CC) -o server server.c -lm
