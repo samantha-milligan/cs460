@@ -53,8 +53,6 @@
            // terminate string
            receive_buffer[bytes_received] = '\0';
 
-           printf("Client : %s\n", receive_buffer);
-
            handle_client(receive_buffer, socket_fd, client_addr, client_addr_length);
          }
      }
@@ -69,11 +67,12 @@ void *handle_client(char *receive_buffer, int socket_fd,
                     struct sockaddr client_addr, socklen_t client_addr_length) {
 
     char *token;
+    char operator_char;
+
     char *operator;
     char *input_1;
     char *input_2;
     char *output;
-
 
     token = strtok(receive_buffer, ",");
     operator = token;
@@ -89,7 +88,8 @@ void *handle_client(char *receive_buffer, int socket_fd,
     if(sqrt_detect){
       printf("Input: %s(%s)\n", operator, input_1);
     } else {
-      printf("Input: %s%s%s\n", input_1, operator, input_2);
+      operator_char = (char) *operator;
+      printf("Input: %s%c%s\n", input_1, operator_char, input_2);
     }
 
     char *values_list[3] = {operator, input_1, input_2};
